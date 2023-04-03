@@ -2,8 +2,9 @@ The Tsallis InAC code is modified based on the Han's InAC 'The In-Sample Softmax
 
 
 ## Modifications
-the policy loss is changed from the Boltzmann softmax to the Tsallis q-exponential.
-value function losses are modified to replace the Shannon entropy to Tsallis entropy
+policy loss: the policy can be seen as induced by the Tsallis KL divergence rather than the KL. As such, the policy (Eq.(7) in Han's paper) is changed from an exponential function to the Tsallis q-exponential.
+
+value function loss: Shannon entropy is replaced to Tsallis entropy based on q-logarithm
 
 ## Running the code:
 
