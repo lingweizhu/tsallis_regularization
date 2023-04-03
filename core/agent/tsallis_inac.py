@@ -140,7 +140,7 @@ class TsallisInAC(base.Agent):
         log_probs = self.ac.pi.get_logprob(states, actions)
         min_Q, _, _ = self.get_q_value(states, actions, with_grad=False)
         '''
-        Tsallis, no Q-V added
+        Tsallis, 
         update towards the policy: pi_D exp_q(Q - Psi) pi_D^{-1}
         the first pi_D is absorbed into expectation, the rest becomes
         [exp_q( Q - Psi + ln_q(pi_D^-1) )^(q-1) + (q-1)^2 (Q-Psi) ln_q(pi_D^-1)]^(1/(q-1))
