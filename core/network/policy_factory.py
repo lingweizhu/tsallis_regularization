@@ -79,7 +79,7 @@ class MLPCont(nn.Module):
         logp_pi = pi_distribution.log_prob(actions).sum(axis=-1)
         logp_pi -= (2*(np.log(2) - actions - F.softplus(-2*actions))).sum(axis=1)
         # compute the q-logarithm of policy
-        logq_pi = self.logq_x(torch.exp(logp_pi), q)
+        logq_pi = self.logq_x(torch.clip(torch.exp(logp_pi), min=1e-8), q)
         return logq_pi
     
     def logq_x(self, x, q=2.0):
