@@ -88,7 +88,6 @@ def load_testset(env_name, dataset, id):
             pth = path[name]
             with open(pth.format(id), 'rb') as f:
                 testsets[name] = pickle.load(f)
-        
         return testsets
     else:
         return {}
@@ -99,7 +98,8 @@ def run_steps(agent, max_steps, log_interval, eval_pth):
     agent.populate_returns(initialize=True)
     while True:
         if log_interval and not agent.total_steps % log_interval:
-            mean, median, min_, max_ = agent.log_file(elapsed_time=log_interval / (time.time() - t0), test=True)
+            mean, median, min_, max_ = agent.log_file(
+                elapsed_time=log_interval / (time.time() - t0), test=True)
             evaluations.append(mean)
             t0 = time.time()
         if max_steps and agent.total_steps >= max_steps:

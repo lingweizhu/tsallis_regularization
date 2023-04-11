@@ -87,7 +87,6 @@ class TsallisInAC(base.Agent):
 
         self.tau = tau
         self.polyak = polyak
-        self.alpha = 0.9
         self.q = 2.0
         self.fill_offline_data_to_buffer()
         self.offline_param_init()
@@ -235,10 +234,12 @@ class TsallisInAC(base.Agent):
 
     def sync_target(self):
         with torch.no_grad():
-            for p, p_targ in zip(self.ac.q1q2.parameters(), self.ac_targ.q1q2.parameters()):
+            for p, p_targ in zip(self.ac.q1q2.parameters(),
+                                 self.ac_targ.q1q2.parameters()):
                 p_targ.data.mul_(self.polyak)
                 p_targ.data.add_((1 - self.polyak) * p.data)
-            for p, p_targ in zip(self.ac.pi.parameters(), self.ac_targ.pi.parameters()):
+            for p, p_targ in zip(self.ac.pi.parameters(),
+                                 self.ac_targ.pi.parameters()):
                 p_targ.data.mul_(self.polyak)
                 p_targ.data.add_((1 - self.polyak) * p.data)
 
@@ -246,10 +247,10 @@ class TsallisInAC(base.Agent):
         parameters_dir = self.parameters_dir
         path = os.path.join(parameters_dir, "actor_net")
         torch.save(self.ac.pi.state_dict(), path)
-    
+
         path = os.path.join(parameters_dir, "critic_net")
         torch.save(self.ac.q1q2.state_dict(), path)
-    
+
         path = os.path.join(parameters_dir, "vs_net")
         torch.save(self.value_net.state_dict(), path)
 

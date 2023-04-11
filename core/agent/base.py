@@ -15,49 +15,51 @@ class Replay:
         self.batch_size = batch_size
         self.data = []
         self.pos = 0
-    
+
     def feed(self, experience):
         if self.pos >= len(self.data):
             self.data.append(experience)
         else:
             self.data[self.pos] = experience
         self.pos = (self.pos + 1) % self.memory_size
-    
+
     def feed_batch(self, experience):
         for exp in experience:
             self.feed(exp)
-    
+
     def sample(self, batch_size=None):
         if batch_size is None:
             batch_size = self.batch_size
-        sampled_indices = [self.rng.randint(0, len(self.data)) for _ in range(batch_size)]
+        sampled_indices = [self.rng.randint(0, len(self.data))
+                           for _ in range(batch_size)]
         sampled_data = [self.data[ind] for ind in sampled_indices]
         batch_data = list(map(lambda x: np.asarray(x), zip(*sampled_data)))
-        
+
         return batch_data
-    
+
     def sample_array(self, batch_size=None):
         if batch_size is None:
             batch_size = self.batch_size
-        
-        sampled_indices = [self.rng.randint(0, len(self.data)) for _ in range(batch_size)]
+
+        sampled_indices = [self.rng.randint(0, len(self.data))
+                           for _ in range(batch_size)]
         sampled_data = [self.data[ind] for ind in sampled_indices]
-        
+
         return sampled_data
-    
+
     def size(self):
         return len(self.data)
-    
+
     def persist_memory(self, dir):
         for k in range(len(self.data)):
             transition = self.data[k]
             with open(os.path.join(dir, str(k)), "wb") as f:
                 pickle.dump(transition, f)
-    
+
     def clear(self):
         self.data = []
         self.pos = 0
-    
+
     def get_buffer(self):
         return self.data
 
@@ -87,7 +89,9 @@ class Agent:
         self.env = env_fn()
         self.eval_env = copy.deepcopy(env_fn)()
         self.offline_data = offline_data
-        self.replay = Replay(memory_size=2000000, batch_size=batch_size, seed=seed)
+        self.replay = Replay(memory_size=2000000,
+                             batch_size=batch_size,
+                             seed=seed)
         self.state_normalizer = lambda x: x
         self.evaluation_criteria = evaluation_criteria
         self.logger = logger
@@ -110,9 +114,11 @@ class Agent:
         self.agent_rng = np.random.RandomState(self.seed)
 
         self.populate_latest = False
-        self.populate_states, self.populate_actions, self.populate_true_qs = None, None, None
+        self.populate_states = None
+        self.populate_actions = None
+        self.populate_true_qs = None
         self.automatic_tmp_tuning = False
-        
+
         self.state = None
         self.action = None
         self.next_state = None
@@ -135,9 +141,11 @@ class Agent:
 
     def get_data(self):
         states, actions, rewards, next_states, terminals = self.replay.sample()
-        in_ = torch_utils.tensor(self.state_normalizer(states), self.device)
+        in_ = torch_utils.tensor(self.state_normalizer(states),
+                                 self.device)
         r = torch_utils.tensor(rewards, self.device)
-        ns = torch_utils.tensor(self.state_normalizer(next_states), self.device)
+        ns = torch_utils.tensor(self.state_normalizer(next_states),
+                                self.device)
         t = torch_utils.tensor(terminals, self.device)
         data = {
             'obs': in_,
@@ -152,7 +160,9 @@ class Agent:
         self.trainset = self.training_set_construction(self.offline_data)
         train_s, train_a, train_r, train_ns, train_t = self.trainset
         for idx in range(len(train_s)):
-            self.replay.feed([train_s[idx], train_a[idx], train_r[idx], train_ns[idx], train_t[idx]])
+            self.replay.feed([train_s[idx], train_a[idx],
+                              train_r[idx], train_ns[idx],
+                              train_t[idx]])
 
     def step(self):
         # trans = self.feed_data()
@@ -160,10 +170,10 @@ class Agent:
         data = self.get_data()
         losses = self.update(data)
         return losses
-    
+
     def update(self, data):
         raise NotImplementedError
-        
+
     def update_stats(self, reward, done):
         self.episode_reward += reward
         self.total_steps += 1
@@ -184,14 +194,19 @@ class Agent:
     def add_train_log(self, ep_return):
         self.ep_returns_queue_train[self.train_stats_counter] = ep_return
         self.train_stats_counter += 1
-        self.train_stats_counter = self.train_stats_counter % self.stats_queue_size
+        self.train_stats_counter = \
+            self.train_stats_counter % self.stats_queue_size
 
     def add_test_log(self, ep_return):
         self.ep_returns_queue_test[self.test_stats_counter] = ep_return
         self.test_stats_counter += 1
-        self.test_stats_counter = self.test_stats_counter % self.stats_queue_size
+        self.test_stats_counter = \
+            self.test_stats_counter % self.stats_queue_size
 
-    def populate_returns(self, log_traj=False, total_ep=None, initialize=False):
+    def populate_returns(self,
+                         log_traj=False,
+                         total_ep=None,
+                         initialize=False):
         total_ep = self.stats_queue_size if total_ep is None else total_ep
         total_steps = 0
         total_states = []
@@ -255,8 +270,8 @@ class Agent:
                   'returns %.2f/%.2f/%.2f/%.2f/%d (mean/median/min/max/num), %.2f steps/s'
 
         self.logger.info(log_str % (name, self.total_steps, total_episodes, mean, median,
-                                        min_, max_, len(rewards),
-                                        elapsed_time))
+                                    min_, max_, len(rewards),
+                                    elapsed_time))
         return mean, median, min_, max_
 
     def log_file(self, elapsed_time=-1, test=True):
