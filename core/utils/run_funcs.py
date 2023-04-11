@@ -1,14 +1,14 @@
 import pickle
 import time
-import copy
 import numpy as np
-
 import os
-os.environ['D4RL_SUPPRESS_IMPORT_ERROR'] = '1'
 import gym
 import d4rl
 import gzip
 
+from pathlib import Path
+
+os.environ['D4RL_SUPPRESS_IMPORT_ERROR'] = '1'
 EARLYCUTOFF = "EarlyCutOff"
 
 
@@ -92,6 +92,7 @@ def load_testset(env_name, dataset, id):
     else:
         return {}
 
+
 def run_steps(agent, max_steps, log_interval, eval_pth):
     t0 = time.time()
     evaluations = []
@@ -106,4 +107,4 @@ def run_steps(agent, max_steps, log_interval, eval_pth):
             break
         agent.step()
     agent.save()
-    np.save(eval_pth+"/evaluations.npy", np.array(evaluations))
+    np.save(Path(eval_pth, "evaluations.npy"), np.array(evaluations))

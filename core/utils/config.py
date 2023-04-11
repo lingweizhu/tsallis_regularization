@@ -2,6 +2,7 @@
 
 import toml
 import itertools
+import hashlib
 from pathlib import Path
 
 def load_toml_config(file_name):
@@ -44,13 +45,15 @@ class Config:
         for k, v in self._sweep_args[id].items():
             self.args[k] = v
 
-    def get_save_dir(self, base_dir, format_args, arg_hash):
+    def get_save_dir(self, base_dir, format_args, arg_hash, run_arg):
         p_args = [arg + "-" + str(self.args[arg]) for arg in format_args]
         arg_d = {k: v for k, v in self.args.items()
-                 if k not in format_args and k not in ["config_version"]}
+                 if k not in format_args and k not in ["config_version"] and k not in hash_ignore}
         a_id = None
         if arg_hash:
-            a_id = str(hash(str(arg_d)))
+            hasher = hashlib.sha1()
+            hasher.update(str(arg_d).encode())
+            a_id = hasher.hexdigest()
         else:
             srt_keys = list(arg_d.keys())
             srt_keys.sort()
