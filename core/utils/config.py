@@ -34,6 +34,9 @@ class Config:
         else:
             return self.__dict__[key]
 
+    def set_seed(self, seed):
+        self.args["seed"] = seed
+
     def _init_config_v1(self, id):
         self._sweep_args = create_sweep_args(self._base_config["sweep"])
         self.args = {k: v for k, v in self._base_config.items()

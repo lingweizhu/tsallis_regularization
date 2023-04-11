@@ -1,4 +1,5 @@
 import argparse
+import random
 
 import core.environment.env_factory as environment
 from core.utils import torch_utils, logger, run_funcs
@@ -14,13 +15,19 @@ from core.construct import construct_agent
 # - maybe mem-map of experiment config?
 # - Check to see if experiment is already run?
 
+
 def run_experiment(config_file, job_id, base_save_dir):
     # Parse Config
     cfg = config.Config(config_file, job_id)
 
     # Setup
     torch_utils.set_one_thread()
-    torch_utils.random_seed(cfg["seed"])
+    # set seed
+    random.seed(cfg["run"])
+    seed = random.randint(1, 1000000000)
+    cfg.set_seed(seed)
+    # cfg["seed"] = seed
+    torch_utils.random_seed(cfg["run"])
 
     # Save Path
     exp_path = cfg.get_save_dir(
