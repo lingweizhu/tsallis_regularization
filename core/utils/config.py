@@ -3,6 +3,8 @@
 import toml
 import itertools
 import hashlib
+import os
+import core.utils.torch_utils as torch_utils
 from pathlib import Path
 
 def load_toml_config(file_name):
@@ -38,6 +40,9 @@ class Config:
     def set_seed(self, seed):
         self.args["seed"] = seed
 
+    def get_num_jobs(self):
+        return len(self._sweep_args)
+
     def _init_config_v1(self, id):
         self._sweep_args = create_sweep_args(self._base_config["sweep"])
         self.args = {k: v for k, v in self._base_config.items()
@@ -45,10 +50,22 @@ class Config:
         for k, v in self._sweep_args[id].items():
             self.args[k] = v
 
-    def get_save_dir(self, base_dir, format_args, arg_hash, hash_ignore=[]):
-        p_args = [arg + "-" + str(self.args[arg]) for arg in format_args]
+    def get_save_dir_and_save_config(
+            self,
+            base_dir,
+            preformat_args,
+            postformat_args,
+            arg_hash,
+            extra_hash_ignore=[]):
+
+        pre_args = [arg + "-" + str(self.args[arg]) for arg in preformat_args]
         arg_d = {k: v for k, v in self.args.items()
-                 if k not in format_args and k not in ["config_version"] and k not in hash_ignore}
+                 if k not in preformat_args and
+                 k not in ["config_version"] and
+                 k not in postformat_args and
+                 k not in extra_hash_ignore}
+        post_args = [arg + "-" + str(self.args[arg])
+                     for arg in postformat_args]
         a_id = None
         if arg_hash:
             hasher = hashlib.sha1()
@@ -58,8 +75,13 @@ class Config:
             srt_keys = list(arg_d.keys())
             srt_keys.sort()
             a_id = '_'.join([k + "-" + str(arg_d[k]) for k in srt_keys])
-        p_args.append(a_id)
-        return Path(base_dir, *p_args)
+
+        my_dir = Path(base_dir, Path(*pre_args), a_id)
+        _cfg_file = Path(my_dir, '_'.join(post_args) + ".toml")
+        torch_utils.ensure_dir(os.path.dirname(_cfg_file))
+        with open(_cfg_file, "w") as f:
+            toml.encoder.dump(self.args, f)
+        return Path(base_dir, Path(*pre_args), a_id, Path(*post_args))
 
     def log(self, logger):
         cfg = self.args

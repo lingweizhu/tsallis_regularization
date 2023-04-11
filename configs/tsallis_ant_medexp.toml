@@ -1,6 +1,12 @@
+#
+# Initial sweep for the TsallisInAC for the an medexp dataset.
+#
+# Gives us a base understanding of how this algorithm works here.
+#
+
 config_version = 1
 device="cpu"
-# info="0"
+
 
 agent_name="TsallisInAC"
 env_name="Ant"
@@ -11,20 +17,21 @@ discrete_control=false
 state_dim=111
 action_dim=8
 
-max_steps=2_000
-log_interval=100
-timeout=100
+max_steps=1_000_000
+log_interval=10_000
+timeout=1000
 
 hidden_units=256
 batch_size=256
 
-tau=0.01
 polyak=0.995
-learning_rate=3e-4
+
 gamma=0.99
 
 use_target_network=1
 target_network_update_freq=1
 
 [sweep]
-run=[0, 1, 2, 3, 4, 5]
+learning_rate=[6.103515625e-5, 0.000244140625, 0.0009765625, 0.00390625, 0.015625]
+tau=[0.0001, 0.001, 0.01, 0.1]
+run=[0, 1, 2, 3, 4]
