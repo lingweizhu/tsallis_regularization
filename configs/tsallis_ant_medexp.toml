@@ -1,13 +1,14 @@
 config_version = 1
+device="cpu" #', default='cpu', type=str)
+info="0" #', default='0', type=str)
 
-# seed=0# , default=0, type=int)
 agent_name="TsallisInAC"
 env_name="Ant" #', default='Ant', type=str)
 dataset="medexp" #', default='medexp', type=str)
 discrete_control=0 #', default=0, type=int)
-state_dim=1 #', default=1, type=int)
-action_dim=1 #', default=1, type=int)
-tau=0.1 #', default=0.1, type=float)
+state_dim=111 #', default=1, type=int)
+action_dim=8 #', default=1, type=int)
+tau=0.01 #', default=0.1, type=float)
 alpha=0.9 #', default=0.9, type=float)
 max_steps=1_000_000 #', default=1000000, type=int)
 log_interval=10_000 #', default=10000, type=int)
@@ -16,12 +17,13 @@ hidden_units=256 #', default=256, type=int)
 batch_size=256 #', default=256, type=int)
 timeout=1000 #', default=1000, type=int)
 gamma=0.99 #', default=0.99, type=float)
+
+
 use_target_network=1 #', default=1, type=int)
 target_network_update_freq=1 #', default=1, type=int)
 polyak=0.995 #', default=0.995, type=float)
 evaluation_criteria="return" #', default='return', type=str)
-device="cpu" #', default='cpu', type=str)
-info="0" #', default='0', type=str)
+
 
 [sweep]
 seed=[0]
