@@ -45,7 +45,7 @@ class Config:
         for k, v in self._sweep_args[id].items():
             self.args[k] = v
 
-    def get_save_dir(self, base_dir, format_args, arg_hash, run_arg):
+    def get_save_dir(self, base_dir, format_args, arg_hash, has_ignore=[]):
         p_args = [arg + "-" + str(self.args[arg]) for arg in format_args]
         arg_d = {k: v for k, v in self.args.items()
                  if k not in format_args and k not in ["config_version"] and k not in hash_ignore}
