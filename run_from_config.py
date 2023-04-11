@@ -1,4 +1,5 @@
 import argparse
+import random
 
 import core.environment.env_factory as environment
 from core.utils import torch_utils, logger, run_funcs
@@ -14,19 +15,27 @@ from core.construct import construct_agent
 # - maybe mem-map of experiment config?
 # - Check to see if experiment is already run?
 
+
 def run_experiment(config_file, job_id, base_save_dir):
     # Parse Config
     cfg = config.Config(config_file, job_id)
 
     # Setup
     torch_utils.set_one_thread()
-    torch_utils.random_seed(cfg["seed"])
+    # set seed
+    random.seed(cfg["run"])
+    seed = random.randint(1, 1000000000)
+    cfg.set_seed(seed)
+    # cfg["seed"] = seed
+    torch_utils.random_seed(cfg["run"])
 
     # Save Path
-    exp_path = cfg.get_save_dir(
+    exp_path = cfg.get_save_dir_and_save_config(
         parsed.base_save_dir,
-        format_args=["env_name", "dataset"],
-        arg_hash=True)
+        preformat_args=["env_name", "dataset"],
+        postformat_args=["run"],
+        arg_hash=True,
+        extra_hash_ignore=["seed", "run"])
     torch_utils.ensure_dir(exp_path)
 
     # DataSet and Environment loading
@@ -59,6 +68,11 @@ if __name__ == '__main__':
     parser.add_argument("--config", type=str)  # This is required
     parser.add_argument("--id", type=int)  # This is required
     parser.add_argument("--base_save_dir", type=str, default="./data/output/")
+    parser.add_argument("--get_num_jobs", action="store_true")
     parsed = parser.parse_args()
 
-    run_experiment(parsed.config, parsed.id, parsed.base_save_dir)
+    if parsed.get_num_jobs:
+        print(config.Config(parsed.config, parsed.id).get_num_jobs())
+    else:
+        run_experiment(parsed.config, parsed.id, parsed.base_save_dir)
+    

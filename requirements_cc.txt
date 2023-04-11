@@ -1,0 +1,10 @@
+D4RL @ git+https://github.com/Farama-Foundation/d4rl@71a9549f2091accff93eeff68f1f3ab2c0e0a288
+mjrl @ git+https://github.com/aravindr93/mjrl@3871d93763d3b49c4741e6daeaebbc605fe140dc
+mujoco==2.3.3
+mujoco-py==2.1.2.14
+gym
+pandas
+pygame
+scikit-learn
+seaborn
+torch
