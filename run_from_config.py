@@ -1,6 +1,6 @@
 import argparse
 import random
-
+import logging
 import core.environment.env_factory as environment
 from core.utils import torch_utils, logger, run_funcs
 from core.utils import config
@@ -69,10 +69,26 @@ if __name__ == '__main__':
     parser.add_argument("--id", type=int)  # This is required
     parser.add_argument("--base_save_dir", type=str, default="./data/output/")
     parser.add_argument("--get_num_jobs", action="store_true")
+    parser.add_argument("--get_job_params", action="store_true")
     parsed = parser.parse_args()
 
     if parsed.get_num_jobs:
         print(config.Config(parsed.config, parsed.id).get_num_jobs())
-    else:
+
+    if parsed.get_job_params:
+        lgr = logging.getLogger()
+        lgr.setLevel(level=logging.INFO)
+        cfg = config.Config(parsed.config, parsed.id)
+        cfg.log(lgr)
+        # config.Config(parsed.config, parsed.id).log(lgr)
+        exp_path = cfg.get_save_dir_and_save_config(
+            parsed.base_save_dir,
+            preformat_args=["env_name", "dataset"],
+            postformat_args=["run"],
+            arg_hash=True,
+            extra_hash_ignore=["seed", "run"], save_config=False)
+        lgr.info('{}: {}'.format("SAVE DIR", exp_path))
+        
+    if not (parsed.get_num_jobs or parsed.get_job_params):
         run_experiment(parsed.config, parsed.id, parsed.base_save_dir)
     
