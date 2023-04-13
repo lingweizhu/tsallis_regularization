@@ -1,6 +1,8 @@
 import argparse
 import random
 import logging
+import traceback
+import pathlib
 import core.environment.env_factory as environment
 from core.utils import torch_utils, logger, run_funcs
 from core.utils import config
@@ -55,10 +57,16 @@ def run_experiment(config_file, job_id, base_save_dir):
         offline_data=offline_data,
         logger=lggr)
 
-    run_funcs.run_steps(agent_obj,
-                        cfg["max_steps"],
-                        cfg["log_interval"],
-                        exp_path)
+    # here we need to capture errors and still return an error if we fail (for gnu-parallel).
+    try:
+        run_funcs.run_steps(agent_obj,
+                            cfg["max_steps"],
+                            cfg["log_interval"],
+                            exp_path)
+    except ValueError as e:
+        with open(pathlib.Path(exp_path, "except.out"), 'w') as f:
+            f.write(str(e))
+            f.write(traceback.format_exc())
 
 
 
@@ -88,7 +96,6 @@ if __name__ == '__main__':
             arg_hash=True,
             extra_hash_ignore=["seed", "run"], save_config=False)
         lgr.info('{}: {}'.format("SAVE DIR", exp_path))
-        
+
     if not (parsed.get_num_jobs or parsed.get_job_params):
         run_experiment(parsed.config, parsed.id, parsed.base_save_dir)
-    
