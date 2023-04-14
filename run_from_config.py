@@ -3,6 +3,8 @@ import random
 import logging
 import traceback
 import pathlib
+import signal
+import torch
 import core.environment.env_factory as environment
 from core.utils import torch_utils, logger, run_funcs
 from core.utils import config
@@ -18,17 +20,29 @@ from core.construct import construct_agent
 # - Check to see if experiment is already run?
 
 
-def run_experiment(config_file, job_id, base_save_dir):
+def timeout_handler(signum, frame):
+    print('Job was forcibly quit with signal', signum)
+    # Let Parallel know we were forced to quit without finishing.
+    exit(22)  # 22 is non-reserved I think...
+
+
+signal.signal(signal.SIGUSR1, timeout_handler)  # USR1 in SLURM will be used as pre=warning for cancel.
+signal.signal(signal.SIGTERM, timeout_handler)  # Terminate
+signal.signal(signal.SIGINT, timeout_handler)  # Interupt
+
+
+def run_experiment(config_file, job_id, base_save_dir, num_threads):
     # Parse Config
     cfg = config.Config(config_file, job_id)
 
     # Setup
-    torch_utils.set_one_thread()
+    torch.use_deterministic_algorithms(True)
+    torch_utils.set_thread_count(num_threads)
+
     # set seed
     random.seed(cfg["run"])
     seed = random.randint(1, 1000000000)
     cfg.set_seed(seed)
-    # cfg["seed"] = seed
     torch_utils.random_seed(cfg["run"])
 
     # Save Path
@@ -78,6 +92,7 @@ if __name__ == '__main__':
     parser.add_argument("--base_save_dir", type=str, default="./data/output/")
     parser.add_argument("--get_num_jobs", action="store_true")
     parser.add_argument("--get_job_params", action="store_true")
+    parser.add_argument("--num_threads", type=int, default=1)
     parsed = parser.parse_args()
 
     if parsed.get_num_jobs:
@@ -98,4 +113,4 @@ if __name__ == '__main__':
         lgr.info('{}: {}'.format("SAVE DIR", exp_path))
 
     if not (parsed.get_num_jobs or parsed.get_job_params):
-        run_experiment(parsed.config, parsed.id, parsed.base_save_dir)
+        run_experiment(parsed.config, parsed.id, parsed.base_save_dir, parsed.num_threads)

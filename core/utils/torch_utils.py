@@ -19,10 +19,10 @@ def random_seed(seed):
     torch.manual_seed(seed)
 
 
-def set_one_thread():
-    os.environ['OMP_NUM_THREADS'] = '1'
-    os.environ['MKL_NUM_THREADS'] = '1'
-    torch.set_num_threads(1)
+def set_thread_count(count=1):
+    os.environ['OMP_NUM_THREADS'] = "{}".format(count)
+    os.environ['MKL_NUM_THREADS'] = "{}".format(count)
+    torch.set_num_threads(count)
 
 
 def ensure_dir(d):
