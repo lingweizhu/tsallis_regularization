@@ -1,27 +1,37 @@
-config_version = 1
+#
+# Initial sweep for the TsallisInAC for the an medexp dataset.
+#
+# Gives us a base understanding of how this algorithm works here.
+#
 
-# seed=0# , default=0, type=int)
+config_version = 1
+device="cpu"
+
+
 agent_name="TsallisInAC"
-env_name="Ant" #', default='Ant', type=str)
-dataset="medexp" #', default='medexp', type=str)
-discrete_control=0 #', default=0, type=int)
-state_dim=1 #', default=1, type=int)
-action_dim=1 #', default=1, type=int)
-tau=0.1 #', default=0.1, type=float)
-alpha=0.9 #', default=0.9, type=float)
-max_steps=1_000_000 #', default=1000000, type=int)
-log_interval=10_000 #', default=10000, type=int)
-learning_rate=3e-4 #', default=3e-4, type=float)
-hidden_units=256 #', default=256, type=int)
-batch_size=256 #', default=256, type=int)
-timeout=1000 #', default=1000, type=int)
-gamma=0.99 #', default=0.99, type=float)
-use_target_network=1 #', default=1, type=int)
-target_network_update_freq=1 #', default=1, type=int)
-polyak=0.995 #', default=0.995, type=float)
-evaluation_criteria="return" #', default='return', type=str)
-device="cpu" #', default='cpu', type=str)
-info="0" #', default='0', type=str)
+env_name="Ant"
+dataset="medexp"
+evaluation_criteria="return"
+
+discrete_control=false
+state_dim=111
+action_dim=8
+
+max_steps=1_000_000
+log_interval=10_000
+timeout=1000
+
+hidden_units=256
+batch_size=256
+
+polyak=0.995
+
+gamma=0.99
+
+use_target_network=1
+target_network_update_freq=1
 
 [sweep]
-seed=[0]
+learning_rate=[6.103515625e-5, 0.000244140625, 0.0009765625, 0.00390625, 0.015625]
+tau=[0.0001, 0.001, 0.01, 0.1]
+run=[0, 1, 2, 3, 4]

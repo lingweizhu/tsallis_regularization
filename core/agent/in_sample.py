@@ -5,7 +5,8 @@ import os
 import torch
 
 from core.network.policy_factory import MLPCont, MLPDiscrete
-from core.network.network_architectures import DoubleCriticNetwork, DoubleCriticDiscrete, FCNetwork
+from core.network.network_architectures \
+    import DoubleCriticNetwork, DoubleCriticDiscrete, FCNetwork
 
 class InSampleAC(base.Agent):
     def __init__(self,
@@ -153,7 +154,7 @@ class InSampleAC(base.Agent):
 
     def update(self, data):
         loss_beta = self.update_beta(data).item()
-        
+
         self.value_optimizer.zero_grad()
         loss_vs, v_info, logp_info = self.compute_loss_value(data)
         loss_vs.backward()
@@ -168,8 +169,10 @@ class InSampleAC(base.Agent):
         self.pi_optimizer.zero_grad()
         loss_pi.backward()
         self.pi_optimizer.step()
-        
-        if self.use_target_network and self.total_steps % self.target_network_update_freq == 0:
+
+        if self.use_target_network and \
+           self.total_steps % \
+           self.target_network_update_freq == 0:
             self.sync_target()
 
         return {"beta": loss_beta,
