@@ -148,7 +148,7 @@ class TsallisInAC(base.Agent):
         with torch.no_grad():
             value = self.get_state_value(states)
             beh_prob = torch.clip(torch.exp(self.beh_pi.get_logprob(states, actions)), min=self.eps)
-            Psi = torch.sqrt((min_Q/self.tau)**2 - (value - 0.5*self.tau)/0.5*self.tau)
+            Psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - 0.5*self.tau)/0.5*self.tau, min=0))
         '''
         x = Q-Psi, y = ln_q pi_D^-1
         '''
