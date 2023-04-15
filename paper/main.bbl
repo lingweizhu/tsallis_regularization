@@ -1,0 +1,137 @@
+\begin{thebibliography}{19}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Azar et~al.(2012)Azar, G{\'{o}}mez, and Kappen]{azar2012dynamic}
+M.~G. Azar, V.~G{\'{o}}mez, and H.~J. Kappen.
+\newblock {Dynamic policy programming}.
+\newblock \emph{Journal of Machine Learning Research}, 13\penalty0
+  (1):\penalty0 3207--3245, 2012.
+
+\bibitem[Blondel et~al.(2020)Blondel, Martins, and
+  Niculae]{Blondel-2020LearningFenchelYoundLoss}
+M.~Blondel, A.~F. Martins, and V.~Niculae.
+\newblock Learning with fenchel-young losses.
+\newblock \emph{Journal of Machine Learning Research}, 21\penalty0
+  (35):\penalty0 1--69, 2020.
+
+\bibitem[Chan et~al.(2022)Chan, Silva, Lim, Kozuno, Mahmood, and
+  White]{chan2021-greedification}
+A.~Chan, H.~Silva, S.~Lim, T.~Kozuno, A.~R. Mahmood, and M.~White.
+\newblock Greedification operators for policy optimization: Investigating
+  forward and reverse kl divergences.
+\newblock \emph{Journal of Machine Learning Research}, 23\penalty0
+  (253):\penalty0 1--79, 2022.
+
+\bibitem[Fujimoto et~al.(2019)Fujimoto, Meger, and
+  Precup]{Fujimoto2019-InSampleMax}
+S.~Fujimoto, D.~Meger, and D.~Precup.
+\newblock Off-policy deep reinforcement learning without exploration.
+\newblock In \emph{Proceedings of the 36th International Conference on Machine
+  Learning}, pages 2052--2062, 2019.
+
+\bibitem[Geist et~al.(2019)Geist, Scherrer, and Pietquin]{geist19-regularized}
+M.~Geist, B.~Scherrer, and O.~Pietquin.
+\newblock A theory of regularized {M}arkov decission processes.
+\newblock In \emph{36th International Conference on Machine Learning},
+  volume~97, pages 2160--2169, 2019.
+
+\bibitem[Haarnoja et~al.(2018)Haarnoja, Zhou, Abbeel, and
+  Levine]{haarnoja-SAC2018}
+T.~Haarnoja, A.~Zhou, P.~Abbeel, and S.~Levine.
+\newblock Soft actor-critic: Off-policy maximum entropy deep reinforcement
+  learning with a stochastic actor.
+\newblock In \emph{Proceedings of the 35th International Conference on Machine
+  Learning}, pages 1861--1870, 2018.
+
+\bibitem[Hiriart-Urruty and Lemar{\'e}chal(2004)]{hiriart2004-convexanalysis}
+J.~Hiriart-Urruty and C.~Lemar{\'e}chal.
+\newblock \emph{Fundamentals of Convex Analysis}.
+\newblock Grundlehren Text Editions. Springer Berlin Heidelberg, 2004.
+
+\bibitem[Kozuno et~al.(2019)Kozuno, Uchibe, and Doya]{kozunoCVI}
+T.~Kozuno, E.~Uchibe, and K.~Doya.
+\newblock Theoretical analysis of efficiency and robustness of softmax and
+  gap-increasing operators in reinforcement learning.
+\newblock In \emph{Proceedings of the Twenty-Second International Conference on
+  Artificial Intelligence and Statistics}, volume~89, pages 2995--3003, 2019.
+
+\bibitem[Kozuno et~al.(2022)Kozuno, Yang, Vieillard, Kitamura, Tang, Mei,
+  Ménard, Azar, Valko, Munos, Pietquin, Geist, and
+  Szepesvári]{Kozuno-2022-KLGenerativeMinMaxOptimal}
+T.~Kozuno, W.~Yang, N.~Vieillard, T.~Kitamura, Y.~Tang, J.~Mei, P.~Ménard,
+  M.~G. Azar, M.~Valko, R.~Munos, O.~Pietquin, M.~Geist, and C.~Szepesvári.
+\newblock Kl-entropy-regularized rl with a generative model is minimax optimal,
+  2022.
+\newblock URL \url{https://arxiv.org/abs/2205.14211}.
+
+\bibitem[Lee et~al.(2018)Lee, Choi, and Oh]{Lee2018-TsallisRAL}
+K.~Lee, S.~Choi, and S.~Oh.
+\newblock Sparse markov decision processes with causal sparse tsallis entropy
+  regularization for reinforcement learning.
+\newblock \emph{IEEE Robotics and Automation Letters}, 3:\penalty0 1466--1473,
+  2018.
+
+\bibitem[Lee et~al.(2020)Lee, Kim, Lim, Choi, Hong, Kim, Park, and
+  Oh]{Lee2020-generalTsallisRSS}
+K.~Lee, S.~Kim, S.~Lim, S.~Choi, M.~Hong, J.~I. Kim, Y.~Park, and S.~Oh.
+\newblock Generalized tsallis entropy reinforcement learning and its
+  application to soft mobile robots.
+\newblock In \emph{Robotics: Science and Systems XVI}, pages 1--10, 2020.
+
+\bibitem[Martins and Astudillo(2016)]{Martins16-sparsemax}
+A.~F.~T. Martins and R.~F. Astudillo.
+\newblock From softmax to sparsemax: A sparse model of attention and
+  multi-label classification.
+\newblock In \emph{Proceedings of the 33rd International Conference on Machine
+  Learning}, page 1614–1623, 2016.
+
+\bibitem[Nachum and Dai(2020)]{Nachum2020-RLFenchelRockafellar}
+O.~Nachum and B.~Dai.
+\newblock Reinforcement learning via fenchel-rockafellar duality.
+\newblock 2020.
+\newblock URL \url{http://arxiv.org/abs/2001.01866}.
+
+\bibitem[Tsallis(1988)]{TsallisEntropy}
+C.~Tsallis.
+\newblock Possible generalization of boltzmann-gibbs statistics.
+\newblock \emph{Journal of Statistical Physics}, 52:\penalty0 479--487, 1988.
+
+\bibitem[Tsallis(2009)]{tsallis2009introduction}
+C.~Tsallis.
+\newblock \emph{Introduction to Nonextensive Statistical Mechanics: Approaching
+  a Complex World}.
+\newblock Springer New York, 2009.
+\newblock ISBN 9780387853581.
+
+\bibitem[Vieillard et~al.(2020)Vieillard, Kozuno, Scherrer, Pietquin, Munos,
+  and Geist]{vieillard2020leverage}
+N.~Vieillard, T.~Kozuno, B.~Scherrer, O.~Pietquin, R.~Munos, and M.~Geist.
+\newblock Leverage the average: an analysis of regularization in rl.
+\newblock In \emph{Advances in Neural Information Processing Systems 33}, pages
+  1--12, 2020.
+
+\bibitem[Xiao et~al.(2023)Xiao, Wang, Pan, White, and
+  White]{Xiao2023-InSampleSoftmax}
+C.~Xiao, H.~Wang, Y.~Pan, A.~White, and M.~White.
+\newblock The in-sample softmax for offline reinforcement learning.
+\newblock In \emph{The Eleventh International Conference on Learning
+  Representations}, 2023.
+\newblock URL \url{https://openreview.net/forum?id=u-RuvyDYqCM}.
+
+\bibitem[Yamano(2002)]{Yamano2004-properties-qlogexp}
+T.~Yamano.
+\newblock Some properties of q-logarithm and q-exponential functions in tsallis
+  statistics.
+\newblock \emph{Physica A: Statistical Mechanics and its Applications},
+  305\penalty0 (3):\penalty0 486--496, 2002.
+
+\bibitem[Zhu et~al.(2023)Zhu, Chen, Matsubara, and White]{zhu2023generalized}
+L.~Zhu, Z.~Chen, T.~Matsubara, and M.~White.
+\newblock Generalized munchausen reinforcement learning using tsallis kl
+  divergence, 2023.
+
+\end{thebibliography}
