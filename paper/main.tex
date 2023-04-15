@@ -376,6 +376,7 @@ Let us define $z_{\datasetPolicy, k, \tau}(s,a) := \frac{Q_{\datasetPolicy, k}(s
     \end{split}
 \end{align}
 In the last step we made use of the relationship $\AdaBracket{\expq{x}\cdot \expq{y}}^{q-1} = \expq{\AdaBracket{x+y}}^{q-1} + (q-1)^2 xy$ \cite{Yamano2004-properties-qlogexp}.
+Similar to the discussion after \eq{\ref{eq:inac_policy}}, the Tsallis policy we derived here can be seen as the result from Tsallis KL regularization, plus another regularization that gives rise to the additional term inside the $\exp_2$ function.
 
 In the discrete case, the truncation threshold or the normalization function $\psi$ is computed by sorting the action values.
 However, in the continuous case we can no longer do that.
