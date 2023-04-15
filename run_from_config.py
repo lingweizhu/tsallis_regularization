@@ -43,7 +43,7 @@ def run_experiment(config_file, job_id, base_save_dir, num_threads):
     random.seed(cfg["run"])
     seed = random.randint(1, 1000000000)
     cfg.set_seed(seed)
-    torch_utils.random_seed(cfg["run"])
+    torch_utils.random_seed(cfg["seed"])
 
     # Save Path
     exp_path = cfg.get_save_dir_and_save_config(
