@@ -7,7 +7,6 @@
 config_version = 1
 device="cpu"
 
-
 agent_name="TsallisInAC"
 env_name="Ant"
 dataset="medexp"
@@ -34,4 +33,4 @@ target_network_update_freq=1
 [sweep]
 learning_rate=[6.103515625e-5, 0.000244140625, 0.0009765625, 0.00390625, 0.015625]
 tau=[0.0001, 0.001, 0.01, 0.1]
-run=[0, 1, 2, 3, 4]
+run=[0, 1, 2, 3]
