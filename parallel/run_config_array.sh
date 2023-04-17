@@ -5,8 +5,6 @@
 #SBATCH --signal=USR1@90
 #SBATCH -o job_out/%x_%a.out # Standard output
 #SBATCH -e job_out/%x_%a.err # Standard error
-#SBATCH --nodes=1   # Get a whole node for the array.
-#SBATCH --mem=0     # Total memory for all tasks
 
 ### USE
 # Need to specify job name, array parameters, and number of tasks per node (split so we can fit a good amount of jobs"
@@ -28,7 +26,7 @@ source /project/6010404/mkschleg/tsallis_inac/TSALLIS_INAC/bin/activate
 mkdir "parallel-logs/${SLURM_JOB_NAME}"
 
 JOB_LOG="parallel-logs/${SLURM_JOB_NAME}/${SLURM_ARRAY_TASK_ID}.log"
-PARALLEL_CONFIGS="--delay .2 -j ${SLURM_NTASKS} -- joblog ${JOB_LOG}"
+PARALLEL_CONFIGS="--delay .2 -j ${SLURM_NTASKS} --joblog ${JOB_LOG}"
 SRUN_CONFIGS="-N 1 -n 1 --exclusive" # 1 CPU per job?
 
 output_str=`python run_from_config.py --id 0 --config $1 --base_save_dir ~/tmp --get_num_jobs`
