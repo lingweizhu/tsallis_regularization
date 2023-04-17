@@ -148,19 +148,18 @@ class TsallisInAC(base.Agent):
             beh_prob = torch.clip(torch.exp(self.beh_pi.get_logprob(states, actions)), min=self.eps)
             # value = self.get_state_value(states)
             # Psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - 0.5*self.tau)/0.5*self.tau, min=0))
-        '''
-        x = Q, y = ln_q pi_D^-1
-        '''
-        
         # x = min_Q/self.tau - Psi
         '''why we do not use Psi 
         we are assuming that actions not in the dataset are truncated 
         by Tsallis behavior policies. So when presented with these actions in the dataset,
         there is no need to do a second round of truncation.  
         Uncomment these lines for values, Psi for a comparison. 
-        They don't learn on more difficult envs like Hopper or Walker
-    
+        They don't learn on more difficult envs like Hopper or Walker    
         '''
+        
+        '''
+        x = Q, y = ln_q pi_D^-1
+        '''                
         x = min_Q / self.tau
         y = self.ac.pi.logq_x(beh_prob**(-1), self.q)
         tsallis_policy = torch.pow(self.ac.pi.expq_x(x + y, self.q)**(self.q-1) + (self.q - 1)**2 * x * y, 1/(self.q-1))
