@@ -39,14 +39,6 @@ M.~Geist, B.~Scherrer, and O.~Pietquin.
 \newblock In \emph{36th International Conference on Machine Learning},
   volume~97, pages 2160--2169, 2019.
 
-\bibitem[Haarnoja et~al.(2018)Haarnoja, Zhou, Abbeel, and
-  Levine]{haarnoja-SAC2018}
-T.~Haarnoja, A.~Zhou, P.~Abbeel, and S.~Levine.
-\newblock Soft actor-critic: Off-policy maximum entropy deep reinforcement
-  learning with a stochastic actor.
-\newblock In \emph{Proceedings of the 35th International Conference on Machine
-  Learning}, pages 1861--1870, 2018.
-
 \bibitem[Hiriart-Urruty and Lemar{\'e}chal(2004)]{hiriart2004-convexanalysis}
 J.~Hiriart-Urruty and C.~Lemar{\'e}chal.
 \newblock \emph{Fundamentals of Convex Analysis}.
@@ -94,6 +86,14 @@ O.~Nachum and B.~Dai.
 \newblock Reinforcement learning via fenchel-rockafellar duality.
 \newblock 2020.
 \newblock URL \url{http://arxiv.org/abs/2001.01866}.
+
+\bibitem[Tsai et~al.(2021)Tsai, Ma, Yang, Zhao, Morency, and
+  Salakhutdinov]{Tsai2021-selfsupervisedRelativePredictiveCoding}
+Y.-H.~H. Tsai, M.~Q. Ma, M.~Yang, H.~Zhao, L.-P. Morency, and R.~Salakhutdinov.
+\newblock Self-supervised representation learning with relative predictive
+  coding.
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+\newblock URL \url{https://openreview.net/forum?id=068E_JSq9O}.
 
 \bibitem[Tsallis(1988)]{TsallisEntropy}
 C.~Tsallis.
