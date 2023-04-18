@@ -9,8 +9,7 @@ from core.utils.torch_utils import random_seed
 
 
 class Acrobot:
-    def __init__(self, seed=np.random.randint(int(1e5))):
-        random_seed(seed)
+    def __init__(self, seed=0):
         self.state_dim = (6,)
         self.action_dim = 3
         self.env = gym.make('Acrobot-v1')
@@ -21,8 +20,8 @@ class Acrobot:
     def generate_state(self, coords):
         return coords
 
-    def reset(self):
-        self.state = np.asarray(self.env.reset())
+    def reset(self, seed):
+        self.state = np.asarray(self.env.reset(seed=seed))
         return self.state
 
     def step(self, a):

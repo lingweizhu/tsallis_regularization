@@ -37,6 +37,12 @@ class Config:
         else:
             return self.__dict__[key]
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__ = d
+
     def set_seed(self, seed):
         self.args["seed"] = seed
 
