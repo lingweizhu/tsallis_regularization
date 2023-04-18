@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2022)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: abbrvnat.bst
+Database file #1: library.bib
+Warning--empty journal in Nachum2020-RLFenchelRockafellar
+You've used 19 entries,
+            2773 wiz_defined-function locations,
+            715 strings with 8996 characters,
+and the built_in function-call counts, 10640 in all, are:
+= -- 912
+> -- 726
+< -- 14
++ -- 244
+- -- 225
+* -- 870
+:= -- 1595
+add.period$ -- 61
+call.type$ -- 19
+change.case$ -- 130
+chr.to.int$ -- 19
+cite$ -- 39
+duplicate$ -- 472
+empty$ -- 804
+format.name$ -- 250
+if$ -- 2263
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 19
+newline$ -- 106
+num.names$ -- 76
+pop$ -- 289
+preamble$ -- 1
+purify$ -- 113
+quote$ -- 0
+skip$ -- 407
+stack$ -- 0
+substring$ -- 346
+swap$ -- 94
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 199
+warning$ -- 1
+while$ -- 81
+width$ -- 0
+write$ -- 255
+(There was 1 warning)

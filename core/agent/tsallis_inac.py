@@ -151,19 +151,27 @@ class TsallisInAC(base.Agent):
         min_Q, _, _ = self.get_q_value(states, actions, with_grad=False)
         '''
         Tsallis, 
-        update towards the policy: pi_D exp_q(Q - Psi) pi_D^{-1}
+        update towards the policy: pi_D exp_q(Q) pi_D^{-1}
         the first pi_D is absorbed into expectation, the rest becomes
         [exp_q( Q - Psi + ln_q(pi_D^-1) )^(q-1) + (q-1)^2 (Q-Psi) ln_q(pi_D^-1)]^(1/(q-1))
-        approximate the normalization Psi by sqrt((Q/tau)^2 - (V-0.5*tau)/0.5*tau)
         '''
         with torch.no_grad():
-            value = self.get_state_value(states)
             beh_prob = torch.clip(torch.exp(self.beh_pi.get_logprob(states, actions)), min=self.eps)
-            Psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - 0.5*self.tau)/0.5*self.tau, min=0))
+            # value = self.get_state_value(states)
+            # Psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - 0.5*self.tau)/0.5*self.tau, min=0))
+        # x = min_Q/self.tau - Psi
+        '''why we do not use Psi 
+        we are assuming that actions not in the dataset are truncated 
+        by Tsallis behavior policies. So when presented with these actions in the dataset,
+        there is no need to do a second round of truncation.  
+        Uncomment these lines for values, Psi for a comparison. 
+        They don't learn on more difficult envs like Hopper or Walker    
         '''
-        x = Q-Psi, y = ln_q pi_D^-1
+
         '''
-        x = min_Q/self.tau - Psi
+        x = Q, y = ln_q pi_D^-1
+        '''                
+        x = min_Q / self.tau
         y = self.ac.pi.logq_x(beh_prob**(-1), self.q)
         tsallis_policy = torch.pow(self.ac.pi.expq_x(x + y, self.q)**(self.q-1) + (self.q - 1)**2 * x * y, 1/(self.q-1))
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
