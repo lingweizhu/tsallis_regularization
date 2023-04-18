@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex main"] 1681780031 "main.aux" "main.bbl" "main" 1681780104
+["bibtex main"] 1681843668 "main.aux" "main.bbl" "main" 1681843673
   "/usr/local/texlive/2022/texmf-dist/bibtex/bst/natbib/abbrvnat.bst" 1233624470 26532 66bed5cc59495faaa3f9ae9af9fa5e42 ""
   "library.bib" 1681778360 270825 6ef3bb486e818c7e7d0561b866c1f40a ""
-  "main.aux" 1681780103 6264 bcc2cf568eeb6e85b09d79e9116014e2 "pdflatex"
+  "main.aux" 1681843673 6424 442c61d898464b068bdac4336fe5cdde "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1681780100 "/Users/lingwei/Desktop/DeepRL/tsallis_inac/paper/main.tex" "main.pdf" "main" 1681780104
-  "/Users/lingwei/Desktop/DeepRL/tsallis_inac/paper/main.tex" 1681780100 32212 072417992e00a76d68475c515f1f820b ""
+["pdflatex"] 1681843668 "/Users/lingwei/Desktop/DeepRL/tsallis_inac/paper/main.tex" "main.pdf" "main" 1681843673
+  "/Users/lingwei/Desktop/DeepRL/tsallis_inac/paper/main.tex" 1681843663 35875 3e5330042729d39fc2d4dc8e0f2ccd7a ""
   "/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -141,15 +141,17 @@
   "/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1647878959 4410336 7d30a02e9fa9a16d7d1f8d037ba69641 ""
   "/usr/local/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt" 1666976062 2826448 8503a6c4a85d9cbd7894c4364720c31c ""
   "/usr/local/texlive/2022/texmf.cnf" 1647878952 577 209b46be99c9075fd74d4c0369380e8c ""
+  "img/q2.0_Boltzmann_sparsemax.png" 1681836075 216821 13f2a7a61a3ea4b279f194511182895d ""
+  "img/q2_Gaussian_sparsemax.png" 1681836075 233103 10b70a3603898c31c01a3d8c5799ac7f ""
+  "img/q50_Boltzmann_sparsemax.png" 1681836075 233473 0c277c6be2d3b9e423e33ad6ca0f792f ""
+  "img/q50_scaled_Gaussian_sparsemax.png" 1681836075 236261 e28dddc18d49f4952927d5063b6783f8 ""
   "img/q_stat_illus.png" 1681770339 359648 8e811a08cb82a9bf317d8b54f619332b ""
-  "img/scaled_Boltzmann_sparsemax.png" 1681770339 233677 4f68c3e461f7c7161abaabc389398056 ""
-  "img/scaled_Gaussian_sparsemax.png" 1681770339 232598 cf823d4cf538e52318192eddc27ba575 ""
   "img/tsallis_entropy.png" 1681770339 463117 8de69bb1c88f1a1bbec919a76e97a6fd ""
   "img/tsallis_kl.png" 1681770339 354693 5c0ebb84f49f1cabb860a752d27afcea ""
-  "main.aux" 1681780103 6264 bcc2cf568eeb6e85b09d79e9116014e2 "pdflatex"
-  "main.bbl" 1681780031 6178 064299d00cc11688970b657d957d36b2 "bibtex main"
-  "main.out" 1681780103 1069 251fe159466608a2512769695467d3d5 "pdflatex"
-  "main.tex" 1681780100 32212 072417992e00a76d68475c515f1f820b ""
+  "main.aux" 1681843673 6424 442c61d898464b068bdac4336fe5cdde "pdflatex"
+  "main.bbl" 1681843668 6178 064299d00cc11688970b657d957d36b2 "bibtex main"
+  "main.out" 1681843673 1069 251fe159466608a2512769695467d3d5 "pdflatex"
+  "main.tex" 1681843663 35875 3e5330042729d39fc2d4dc8e0f2ccd7a ""
   "nips_2018.sty" 1672939292 11050 c75fb268b10853b2f22624b5395f8532 ""
   (generated)
   "main.aux"
