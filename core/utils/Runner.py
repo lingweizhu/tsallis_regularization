@@ -155,6 +155,14 @@ class Runner(object):
             for c in chkpts[:-1]:
                 os.remove(Path(self._chkpt_dir(), c))
 
+    def cleanup_all_checkpoints(self):
+        chkpts = os.listdir(self._chkpt_dir())
+        print("Cleanup Checkpoints", chkpts)
+        chkpts.sort()
+        if chkpts is not None:
+            for c in chkpts:
+                os.remove(Path(self._chkpt_dir(), c))
+
     def _checkpoint_experiment(self, iteration):
         # Where to save self.save_path
         # iteration is the iteration we are saving on.
@@ -248,6 +256,7 @@ class Runner(object):
             self.agent.save()
             np.save(Path(self.save_path, "evaluations.npy"),
                     np.array(self.evaluations))  # Final save.
+            self.cleanup_all_checkpoints()
         except ValueError as e:
             with open(Path(self.save_path, "except.out"), 'w') as f:
                 f.write(str(e))
@@ -257,3 +266,4 @@ class Runner(object):
             self.evaluations.append(float("nan"))
             np.save(Path(self.save_path, "evaluations.npy"),
                     np.array(self.evaluations))  # Final save.
+            self.cleanup_all_checkpoints()
