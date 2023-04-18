@@ -33,6 +33,14 @@ class Logger:
         self._logger.setLevel(level=logging.INFO)
 
         self.config = config
+        self.log_dir = log_dir
+
+    def __getstate__(self):
+        return {"log_dir": self.log_dir,
+                "config": self.config}
+
+    def __setstate__(self, d):
+        self.__init__(d["config"], d["log_dir"])
 
     def info(self, log_msg):
         self._logger.info(log_msg)
