@@ -71,13 +71,22 @@ def load_testset(env_name, dataset, id):
             except:
                 env = env.unwrapped
                 data = env.get_dataset()
-            testsets[name] = {
-                'states': data['observations'],
-                'actions': data['actions'],
-                'rewards': data['rewards'],
-                'next_states': data['next_observations'],
-                'terminations': data['terminals'],
-            }
+            if env_name == "Ant":
+                testsets[name] = {
+                    'states': data['observations'][:, 0:27],
+                    'actions': data['actions'],
+                    'rewards': data['rewards'],
+                    'next_states': data['next_observations'][:, 0:27],
+                    'terminations': data['terminals'],
+                }
+            else:
+                testsets[name] = {
+                    'states': data['observations'],
+                    'actions': data['actions'],
+                    'rewards': data['rewards'],
+                    'next_states': data['next_observations'],
+                    'terminations': data['terminals'],
+                }
         else:
             pth = path[name]
             with open(pth.format(id), 'rb') as f:
