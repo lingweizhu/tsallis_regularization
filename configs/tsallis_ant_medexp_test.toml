@@ -17,8 +17,8 @@ state_dim=111
 action_dim=8
 
 max_steps=1_000_000
-log_interval=10_000
-timeout=1000
+log_interval=1_000
+timeout=500
 
 hidden_units=256
 batch_size=256
