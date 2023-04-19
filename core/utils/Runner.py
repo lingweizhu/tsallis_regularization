@@ -66,6 +66,7 @@ import traceback
 import cloudpickle
 import pickle
 import copy
+import re
 
 
 import core.environment.env_factory as environment
@@ -150,15 +151,16 @@ class Runner(object):
 
     def cleanup_checkpoints(self):
         chkpts = os.listdir(self._chkpt_dir())
-        chkpts.sort()
         if chkpts is not None and len(chkpts) > 1:
-            for c in chkpts[:-1]:
-                os.remove(Path(self._chkpt_dir(), c))
+            iters = [int(re.findall(r"\d+", chkpt)[0]) for chkpt in chkpts]
+            iters.sort()
+            for i in iters[:-1]:
+                os.remove(Path(self._chkpt_dir(),
+                               "iteration_{}.pkl".format(i)))
 
     def cleanup_all_checkpoints(self):
         chkpts = os.listdir(self._chkpt_dir())
         print("Cleanup Checkpoints", chkpts)
-        chkpts.sort()
         if chkpts is not None:
             for c in chkpts:
                 os.remove(Path(self._chkpt_dir(), c))
