@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex main"] 1681843668 "main.aux" "main.bbl" "main" 1681843673
+["bibtex main"] 1681949965 "main.aux" "main.bbl" "main" 1681951081
   "/usr/local/texlive/2022/texmf-dist/bibtex/bst/natbib/abbrvnat.bst" 1233624470 26532 66bed5cc59495faaa3f9ae9af9fa5e42 ""
   "library.bib" 1681778360 270825 6ef3bb486e818c7e7d0561b866c1f40a ""
-  "main.aux" 1681843673 6424 442c61d898464b068bdac4336fe5cdde "pdflatex"
+  "main.aux" 1681951081 6476 51335f2ee41430454ded2801cb12a4f0 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1681843668 "/Users/lingwei/Desktop/DeepRL/tsallis_inac/paper/main.tex" "main.pdf" "main" 1681843673
-  "/Users/lingwei/Desktop/DeepRL/tsallis_inac/paper/main.tex" 1681843663 35875 3e5330042729d39fc2d4dc8e0f2ccd7a ""
+["pdflatex"] 1681951076 "/Users/lingwei/Desktop/DeepRL/tsallis_inac/paper/main.tex" "main.pdf" "main" 1681951081
+  "/Users/lingwei/Desktop/DeepRL/tsallis_inac/paper/main.tex" 1681951076 39428 005a296f7134c6e5b0fc12c096bc75c5 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -148,10 +148,10 @@
   "img/q_stat_illus.png" 1681770339 359648 8e811a08cb82a9bf317d8b54f619332b ""
   "img/tsallis_entropy.png" 1681770339 463117 8de69bb1c88f1a1bbec919a76e97a6fd ""
   "img/tsallis_kl.png" 1681770339 354693 5c0ebb84f49f1cabb860a752d27afcea ""
-  "main.aux" 1681843673 6424 442c61d898464b068bdac4336fe5cdde "pdflatex"
-  "main.bbl" 1681843668 6178 064299d00cc11688970b657d957d36b2 "bibtex main"
-  "main.out" 1681843673 1069 251fe159466608a2512769695467d3d5 "pdflatex"
-  "main.tex" 1681843663 35875 3e5330042729d39fc2d4dc8e0f2ccd7a ""
+  "main.aux" 1681951081 6476 51335f2ee41430454ded2801cb12a4f0 "pdflatex"
+  "main.bbl" 1681949965 6178 064299d00cc11688970b657d957d36b2 "bibtex main"
+  "main.out" 1681951081 1069 251fe159466608a2512769695467d3d5 "pdflatex"
+  "main.tex" 1681951076 39428 005a296f7134c6e5b0fc12c096bc75c5 ""
   "nips_2018.sty" 1672939292 11050 c75fb268b10853b2f22624b5395f8532 ""
   (generated)
   "main.aux"
