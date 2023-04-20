@@ -7,6 +7,9 @@ import torch
 from core.network.policy_factory import MLPCont, MLPDiscrete
 from core.network.network_architectures import DoubleCriticNetwork, DoubleCriticDiscrete, FCNetwork
 
+AC = namedtuple('AC', ['q1q2', 'pi'])
+ACTarg = namedtuple('ACTarg', ['q1q2', 'pi'])
+
 class TsallisInAC(base.Agent):
     def __init__(self,
                  device,
@@ -44,40 +47,49 @@ class TsallisInAC(base.Agent):
             evaluation_criteria=evaluation_criteria,
             logger=logger
         )
-        
+
         def get_policy_func():
             if discrete_control:
-                pi = MLPDiscrete(device, state_dim, action_dim, [hidden_units]*2)
+                pi = MLPDiscrete(
+                    device, state_dim, action_dim, [hidden_units]*2)
             else:
-                pi = MLPCont(device, state_dim, action_dim, [hidden_units]*2)
+                pi = MLPCont(
+                    device, state_dim, action_dim, [hidden_units]*2)
             return pi
 
         def get_critic_func():
             if discrete_control:
-                q1q2 = DoubleCriticDiscrete(device, state_dim, [hidden_units]*2, action_dim)
+                q1q2 = DoubleCriticDiscrete(
+                    device, state_dim, [hidden_units]*2, action_dim)
             else:
-                q1q2 = DoubleCriticNetwork(device, state_dim, action_dim, [hidden_units]*2)
+                q1q2 = DoubleCriticNetwork(
+                    device, state_dim, action_dim, [hidden_units]*2)
             return q1q2
-            
+
         pi = get_policy_func()
         q1q2 = get_critic_func()
-        AC = namedtuple('AC', ['q1q2', 'pi'])
+
         self.ac = AC(q1q2=q1q2, pi=pi)
         pi_target = get_policy_func()
         q1q2_target = get_critic_func()
         q1q2_target.load_state_dict(q1q2.state_dict())
         pi_target.load_state_dict(pi.state_dict())
-        ACTarg = namedtuple('ACTarg', ['q1q2', 'pi'])
+
         self.ac_targ = ACTarg(q1q2=q1q2_target, pi=pi_target)
         self.ac_targ.q1q2.load_state_dict(self.ac.q1q2.state_dict())
         self.ac_targ.pi.load_state_dict(self.ac.pi.state_dict())
         self.beh_pi = get_policy_func()
-        self.value_net = FCNetwork(device, np.prod(state_dim), [hidden_units]*2, 1)
+        self.value_net = FCNetwork(
+            device, np.prod(state_dim), [hidden_units]*2, 1)
 
-        self.pi_optimizer = torch.optim.Adam(list(self.ac.pi.parameters()), learning_rate)
-        self.q_optimizer = torch.optim.Adam(list(self.ac.q1q2.parameters()), learning_rate)
-        self.value_optimizer = torch.optim.Adam(list(self.value_net.parameters()), learning_rate)
-        self.beh_pi_optimizer = torch.optim.Adam(list(self.beh_pi.parameters()), learning_rate)
+        self.pi_optimizer = torch.optim.Adam(
+            list(self.ac.pi.parameters()), learning_rate)
+        self.q_optimizer = torch.optim.Adam(
+            list(self.ac.q1q2.parameters()), learning_rate)
+        self.value_optimizer = torch.optim.Adam(
+            list(self.value_net.parameters()), learning_rate)
+        self.beh_pi_optimizer = torch.optim.Adam(
+            list(self.beh_pi.parameters()), learning_rate)
         self.exp_threshold = 10000
         if discrete_control:
             self.get_q_value = self.get_q_value_discrete
@@ -88,11 +100,12 @@ class TsallisInAC(base.Agent):
 
         self.tau = tau
         self.polyak = polyak
-        self.q = q
-        self.fill_offline_data_to_buffer()
-        self.offline_param_init()
-        return
 
+        self.q = q
+        self.fill_offline_data_to_buffer(offline_data)
+        self.offline_param_init(offline_data)
+
+        return
 
     def compute_loss_beh_pi(self, data):
         """L_{\omega}, learn behavior policy"""
@@ -100,7 +113,7 @@ class TsallisInAC(base.Agent):
         beh_log_probs = self.beh_pi.get_logprob(states, actions)
         beh_loss = -beh_log_probs.mean()
         return beh_loss, beh_log_probs
-    
+
     def compute_loss_value(self, data):
         """L_{\phi}, learn z for state value, v = tau log z"""
         states = data['obs']
@@ -160,7 +173,7 @@ class TsallisInAC(base.Agent):
         Uncomment these lines for values, Psi for a comparison. 
         They don't learn on more difficult envs like Hopper or Walker    
         '''
-        
+
         '''
         x = Q, y = ln_q pi_D^-1
         '''                

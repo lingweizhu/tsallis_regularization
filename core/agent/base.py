@@ -16,6 +16,19 @@ class Replay:
         self.data = []
         self.pos = 0
 
+    def __getstate__(self):
+        d = {k: self.__dict__[k]
+             for k in filter(lambda k: k != "data", self.__dict__)}
+        indecies = len(self.data[1])
+        d["numpy_data"] = [np.array([row[i] for row in self.data]) for i in range(indecies)]
+        return d
+
+    def __setstate__(self, d):
+        new_d = {k: d[k]
+                 for k in filter(lambda k: k != "numpy_data", d)}
+        new_d["data"] = [[_d[i] for _d in d["numpy_data"]] for i in range(d["numpy_data"][1].shape[0])]
+        self.__dict__ = new_d
+
     def feed(self, experience):
         if self.pos >= len(self.data):
             self.data.append(experience)
@@ -63,6 +76,9 @@ class Replay:
     def get_buffer(self):
         return self.data
 
+class IdentityStateNormalizer():
+    def __call__(self, x):
+        return x
 
 class Agent:
     def __init__(self,
@@ -88,11 +104,13 @@ class Agent:
         self.batch_size = batch_size
         self.env = env_fn()
         self.eval_env = copy.deepcopy(env_fn)()
-        self.offline_data = offline_data
+        # self.offline_data = offline_data
         self.replay = Replay(memory_size=2000000,
                              batch_size=batch_size,
                              seed=seed)
-        self.state_normalizer = lambda x: x
+
+        self.state_normalizer = IdentityStateNormalizer()  # lambda x: x
+
         self.evaluation_criteria = evaluation_criteria
         self.logger = logger
         self.timeout = timeout
@@ -124,13 +142,27 @@ class Agent:
         self.next_state = None
         self.eps = 1e-8
 
+        # self.rng = np.random.RandomState(seed)
+        # self.memory_size = memory_size
+        # self.batch_size = batch_size
+        # self.data = []
+        # self.pos = 0
+    def __getstate__(self):
+        # d = {k: self.__dict__[k]
+        #      for k in filter(lambda k: k != "replay", self.__dict__)}
+        # return d
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__ = d
+
     def get_parameters_dir(self):
         d = os.path.join(self.exp_path, "parameters")
         torch_utils.ensure_dir(d)
         return d
 
-    def offline_param_init(self):
-        self.trainset = self.training_set_construction(self.offline_data)
+    def offline_param_init(self, offline_data):
+        self.trainset = self.training_set_construction(offline_data)
         self.training_size = len(self.trainset[0])
         self.training_indexs = np.arange(self.training_size)
 
@@ -156,8 +188,8 @@ class Agent:
         }
         return data
 
-    def fill_offline_data_to_buffer(self):
-        self.trainset = self.training_set_construction(self.offline_data)
+    def fill_offline_data_to_buffer(self, offline_data):
+        self.trainset = self.training_set_construction(offline_data)
         train_s, train_a, train_r, train_ns, train_t = self.trainset
         for idx in range(len(train_s)):
             self.replay.feed([train_s[idx], train_a[idx],
@@ -232,7 +264,7 @@ class Agent:
 
     def eval_episode(self, log_traj=False):
         ep_traj = []
-        state = self.eval_env.reset()
+        state = self.eval_env.reset(seed=self.agent_rng.randint(1, 100000000)) # Maybe this will be reset properly
         total_rewards = 0
         ep_steps = 0
         done = False

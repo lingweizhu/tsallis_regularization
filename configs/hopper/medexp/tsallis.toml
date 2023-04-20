@@ -1,20 +1,16 @@
-#
-# Initial sweep for the TsallisInAC for the an medexp dataset.
-#
-# Gives us a base understanding of how this algorithm works here.
-#
+# Coarse sweep for hopper med exp
 
 config_version = 1
 device="cpu"
 
 agent_name="TsallisInAC"
-env_name="Ant"
+env_name="Hopper"
 dataset="medexp"
 evaluation_criteria="return"
 
 discrete_control=false
-state_dim=111
-action_dim=8
+state_dim=11
+action_dim=3
 
 max_steps=1_000_000
 log_interval=10_000

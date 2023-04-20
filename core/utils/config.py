@@ -37,6 +37,12 @@ class Config:
         else:
             return self.__dict__[key]
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__ = d
+
     def set_seed(self, seed):
         self.args["seed"] = seed
 
@@ -56,7 +62,8 @@ class Config:
             preformat_args,
             postformat_args,
             arg_hash,
-            extra_hash_ignore=[]):
+            extra_hash_ignore=[],
+            save_config=True):
 
         pre_args = [arg + "-" + str(self.args[arg]) for arg in preformat_args]
         arg_d = {k: v for k, v in self.args.items()
@@ -76,11 +83,13 @@ class Config:
             srt_keys.sort()
             a_id = '_'.join([k + "-" + str(arg_d[k]) for k in srt_keys])
 
-        my_dir = Path(base_dir, Path(*pre_args), a_id)
-        _cfg_file = Path(my_dir, '_'.join(post_args) + ".toml")
-        torch_utils.ensure_dir(os.path.dirname(_cfg_file))
-        with open(_cfg_file, "w") as f:
-            toml.encoder.dump(self.args, f)
+        if save_config:
+            my_dir = Path(base_dir, Path(*pre_args), a_id)
+            _cfg_file = Path(my_dir, '_'.join(post_args) + ".toml")
+            torch_utils.ensure_dir(os.path.dirname(_cfg_file))
+            with open(_cfg_file, "w") as f:
+                toml.encoder.dump(self.args, f)
+
         return Path(base_dir, Path(*pre_args), a_id, Path(*post_args))
 
     def log(self, logger):

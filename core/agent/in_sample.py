@@ -88,8 +88,8 @@ class InSampleAC(base.Agent):
 
         self.tau = tau
         self.polyak = polyak
-        self.fill_offline_data_to_buffer()
-        self.offline_param_init()
+        self.fill_offline_data_to_buffer(offline_data)
+        self.offline_param_init(offline_data)
         return
 
 

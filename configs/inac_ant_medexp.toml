@@ -7,13 +7,13 @@
 config_version = 1
 device="cpu"
 
-agent_name="TsallisInAC"
+agent_name="InSampleAC"
 env_name="Ant"
 dataset="medexp"
 evaluation_criteria="return"
 
 discrete_control=false
-state_dim=111
+state_dim=27
 action_dim=8
 
 max_steps=1_000_000
