@@ -860,6 +860,8 @@ INPUT ./img/tsallis_kl.png
 INPUT img/tsallis_kl.png
 INPUT ./img/tsallis_kl.png
 INPUT ./img/tsallis_kl.png
+INPUT /usr/local/texlive/2022/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
+INPUT /usr/local/texlive/2022/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT ./img/q2_Gaussian_sparsemax.png
 INPUT ./img/q2_Gaussian_sparsemax.png
 INPUT img/q2_Gaussian_sparsemax.png
@@ -880,8 +882,6 @@ INPUT ./img/q50_Boltzmann_sparsemax.png
 INPUT img/q50_Boltzmann_sparsemax.png
 INPUT ./img/q50_Boltzmann_sparsemax.png
 INPUT ./img/q50_Boltzmann_sparsemax.png
-INPUT /usr/local/texlive/2022/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
-INPUT /usr/local/texlive/2022/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /usr/local/texlive/2022/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 INPUT /usr/local/texlive/2022/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 INPUT /usr/local/texlive/2022/texmf-dist/tex/latex/psnfss/ts1ptm.fd
