@@ -9,24 +9,28 @@ from core.utils.torch_utils import random_seed
 
 
 class Ant:
-    def __init__(self, seed=np.random.randint(int(1e5))):
-        random_seed(seed)
-        self.state_dim = (111,)
+    def __init__(self, seed=0):
+
+        self.state_dim = (27,)
         self.action_dim = 8
         # self.env = gym.make('Ant-v2')
-        self.env = gym.make('ant-random-v2')# Loading d4rl env. For the convinience of getting normalized score from d4rl
-        self.env.unwrapped.seed(seed)
-        self.env._max_episode_steps = np.inf # control timeout setting in agent
+
+        # Loading d4rl env. For the convinience
+        # of getting normalized score from d4rl
+        self.env = gym.make('ant-random-v2')
+
+        # control timeout setting in agent
+        self.env._max_episode_steps = np.inf
         self.state = None
 
-    def reset(self):
-        return self.env.reset()
+    def reset(self, seed):
+        return self.env.reset(seed=seed)[0:27]
 
     def step(self, a):
         ret = self.env.step(a[0])
         state, reward, done, info = ret
+        state = state[0:27]
         self.state = state
-        # self.env.render()
         return np.asarray(state), np.asarray(reward), np.asarray(done), info
 
     def get_visualization_segment(self):
@@ -34,9 +38,9 @@ class Ant:
 
     def get_useful(self, state=None):
         if state:
-            return state
+            return state[0:27]
         else:
-            return np.array(self.env.state)
+            return np.array(self.env.state[0:27])
 
     def info(self, key):
         return
