@@ -218,8 +218,10 @@ class Runner(object):
             return None
 
         if len(ls) != 0:
-            ls.sort()
-            return Path(ckpt_dir, ls[-1])
+            iters = [int(re.findall(r"\d+", chkpt)[0]) for chkpt in ls]
+            iters.sort()
+            # ls.sort()
+            return Path(ckpt_dir, "iteration_{}.pkl".format(iters[-1]))
         else:
             return None
 
