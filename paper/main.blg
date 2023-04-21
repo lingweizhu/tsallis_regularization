@@ -3,46 +3,47 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: abbrvnat.bst
 Database file #1: library.bib
-Warning--empty journal in Nachum2020-RLFenchelRockafellar
-You've used 19 entries,
+Warning--empty chapter and pages in Kumar2019-BootstrapErrorQlearningMMD
+Warning--empty publisher in Kumar2019-BootstrapErrorQlearningMMD
+You've used 25 entries,
             2773 wiz_defined-function locations,
-            715 strings with 8996 characters,
-and the built_in function-call counts, 10640 in all, are:
-= -- 912
-> -- 726
+            747 strings with 10367 characters,
+and the built_in function-call counts, 13344 in all, are:
+= -- 1139
+> -- 886
 < -- 14
-+ -- 244
-- -- 225
-* -- 870
-:= -- 1595
-add.period$ -- 61
-call.type$ -- 19
-change.case$ -- 130
-chr.to.int$ -- 19
-cite$ -- 39
-duplicate$ -- 472
-empty$ -- 804
-format.name$ -- 250
-if$ -- 2263
++ -- 298
+- -- 273
+* -- 1064
+:= -- 1979
+add.period$ -- 78
+call.type$ -- 25
+change.case$ -- 164
+chr.to.int$ -- 25
+cite$ -- 52
+duplicate$ -- 620
+empty$ -- 1041
+format.name$ -- 302
+if$ -- 2856
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 19
-newline$ -- 106
-num.names$ -- 76
-pop$ -- 289
+missing$ -- 23
+newline$ -- 136
+num.names$ -- 100
+pop$ -- 386
 preamble$ -- 1
-purify$ -- 113
+purify$ -- 141
 quote$ -- 0
-skip$ -- 407
+skip$ -- 531
 stack$ -- 0
-substring$ -- 346
-swap$ -- 94
+substring$ -- 381
+swap$ -- 130
 text.length$ -- 8
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 199
-warning$ -- 1
-while$ -- 81
+type$ -- 260
+warning$ -- 2
+while$ -- 99
 width$ -- 0
-write$ -- 255
-(There was 1 warning)
+write$ -- 328
+(There were 2 warnings)
