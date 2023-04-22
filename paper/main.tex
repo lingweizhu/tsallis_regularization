@@ -301,7 +301,7 @@ We can write out the regularized policy for general Tsallis entropy regularizati
 \end{align}
   $K(s)$ is the set of highest-value actions satisfying $1 \!+\! i\frac{Q(s,a_{(i)})}{\tau} \!>\! \sum_{j=1}^{i}\frac{Q(s,a_{(j)})}{\tau}$, with $a_{(j)}$ denotes the $j$-th largest action.
   Intuitively, the policy first sorts actions by $a_{(1)}, \dots, a_{(|\mathcal{A}|)}$ and then compute the threshold $\psi$.
-  Suppose $Q(s, a_{(j+1)}) \leq \psi \leq Q(s, a_{(j)})$, then all actions from $j+1$ are truncated and have zero probability of being selected.
+  Suppose $Q(s, a_{(j+1)}) \leq \psi \leq Q(s, a_{(j)})$, then actions from $a_{(j+1)}, \dots, a_{(|\mathcal{A}|)}$ are truncated and have zero probability of being selected.
   The truncation effect can be controlled by $\tau$.
   
   Note that for $q\neq 1,2,\infty$ the policy does not have a closed-form solution. 
@@ -473,7 +473,7 @@ The power of the assumption manifests when we use also Tsallis regularized polic
 % However, it should be noted that the learned policy no longer requires a thresholding function $\tilde{\psi}$ since the set of allowable actions $K_\mathcal{D}$ is given, hence no action need to be explicitly truncated.
 % Specifically, we propose to modify the learned policy form as 
 \begin{align}
-    & \pi_{t+1, \datasetPolicy}(a|s) \propto \exp_q\AdaBracket{\frac{Q_{t, \datasetPolicy}(s,a)}{\tau}},  \quad \sum_{a\in K_{\mathcal{D}}(s)} \pi_{t+1, \datasetPolicy} = 1.\\
+    & \pi_{t+1, \datasetPolicy}(a|s) \propto \exp_q\AdaBracket{\frac{Q_{t, \datasetPolicy}(s,a)}{\tau}},  \quad \sum_{a\in K_{\mathcal{D}}(s)} \pi_{t+1, \datasetPolicy} (a|s) = 1.\\
     Q_{t+1, \datasetPolicy}(s,a) &= r(s,a) +  \gamma \expectation{s'\sim P(\cdot | s,a)}{ \sum_{a' \in K_{\mathcal{D}}(s)} \!\!\!\!\! \pi_{t+1}(a'|s') \AdaBracket{Q_{t, \datasetPolicy}(s',a') - \tau S_q(\pi_{t+1}(\cdot|s'))}}.
     \label{eq:proposal_policy}
 \end{align}
