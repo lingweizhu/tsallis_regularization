@@ -293,7 +293,7 @@ The name sparse entropy comes from the fact that the regularizer leads to sparse
 When $q=\infty$, the regularizer vanishes.
 In Figure \ref{fig:q_stats} we plot the behavior of $q$-statistics under different $q$.
 
-We can write out the regularized policy for general Tsallis entropy regularization for any $q$\footnotemark\footnotetext{Different to prior works \cite{Lee2018-TsallisRAL,Nachum18a-tsallis}, our definition of $\psi$ has an additional $\frac{1}{q-1}$ term in order to be accommodated in the $q$-exponential function, see Appendix \ref{apdx:derivation} for derivation.}:
+We can write out the regularized policy for general Tsallis entropy regularization for any $q$\footnotemark\footnotetext{Different to prior works \cite{Lee2018-TsallisRAL,Nachum18a-tsallis}, our definition of $\psi$ has an additional $\frac{1}{q-1}$ term to accommodate the $q$-exponential policy, see Appendix \ref{apdx:derivation} for derivation.}:
 \begin{align}
     \pi(a|s) = \exp_q \AdaBracket{\frac{Q(s,a)}{\tau } - {\psi}\AdaBracket{\frac{Q(s, \cdot)}{\tau }}}, \,\,
     {\psi}\AdaBracket{\frac{Q(s,\cdot)}{\tau}} \doteq \frac{\sum_{a\in K(s)} \frac{Q(s,a)}{\tau} - 1 }{|K{(s)}|} + \frac{1}{q-1}.
@@ -381,7 +381,9 @@ In the policy improvement step, the unrealistic high values of the OOD actions l
 
 It is worth noting that unlike for online RL, where the OOD actions can lead to sampling more around the low sample region and eventually correction of the values, in offline RL this is impossible.
 Instead, many of the existing works propose to force the learned policy to be close to the behavior policy \cite{Dadashi2021-pseudoMetricOffline,Fujimoto2019-InSampleMax,Fujimoto2021-minimalist,Nair2021-awac}.
-This is often achieved by adding a regularizer penalizing deviating from the behavior policy \cite{Ghasemipour2021-EMaQ,Kumar2019-BootstrapErrorQlearningMMD,Jaques2020-OfflineDialog,Wu2020-BehaviorRegularizedAC}, e.g. incorporating the KL penalty $\tau\KLany{\pi(\cdot|s)}{\datasetPolicy(\cdot|s)}$ leads to the policy form $\pi(a|s)\propto\datasetPolicy(a|s)\exp\AdaBracket{\tau^{-1}Q_{\pi}(s,a)}$ where the learned policy must have the same support of the behavior policy.
+This is often achieved by adding a regularizer in the policy update penalizing deviating from the behavior policy \cite{Ghasemipour2021-EMaQ,Kumar2019-BootstrapErrorQlearningMMD,Jaques2020-OfflineDialog,Wu2020-BehaviorRegularizedAC}, e.g. by incorporating KL divergence $\max_{\pi}\expectation{s\sim\mathcal{D}}{\expectation{a\sim\pi(\cdot|s)}{Q(s,a)} - \tau\KLany{\pi(\cdot|s)}{\datasetPolicy(\cdot|s)}}$.
+The critic is typically updated by minimizing the loss $\mathbb{E}_{(s,a,s')\sim \mathcal{D}}\expectation{a\sim\pi(\cdot|s)}{\AdaBracket{ r(s,a) + \gamma Q(s',a') - Q(s,a)}^2}$.
+The regularization leads to the policy form $\pi(a|s)\propto\datasetPolicy(a|s)\exp\AdaBracket{\tau^{-1}Q_{\pi}(s,a)}$ where the learned policy must have the same support of the behavior policy.
 This idea is shared by the \emph{in-sample} methods that enforce the support of the learned policy to be within the behavior policy $\pi \preceq \datasetPolicy$ \cite{Fujimoto2019-InSampleMax,Kostrikov2022-implicitQlearning,Xiao2023-InSampleSoftmax}, which is achieved by only updating for the actions in the dataset.
 
 
@@ -416,7 +418,7 @@ As the dataset support constraint poses a challenge to implementation, \citet{Xi
 The expectation can be approximated by Monte-Carlo sampling actions from the dataset.
 Since the term $\exp\AdaBracket{\tau^{-1}\datasetOptimalQ (s',a')}$ appears also in the regularized softmax policy, in-sample softmax updates the policy towards 
 \begin{align}
-    \pi_{\datasetPolicy, k+1} \propto  \datasetPolicy(a|s) \exp\AdaBracket{\frac{Q_{\datasetPolicy, k}(s,a)}{\tau} - \ln\hat{\pi}_{\mathcal{D}}(a|s)},
+    \pi_{t+1,\datasetPolicy} \propto  \datasetPolicy(a|s) \exp\AdaBracket{\frac{Q_{t, \datasetPolicy}(s,a)}{\tau} - \ln\hat{\pi}_{\mathcal{D}}(a|s)},
     \label{eq:inac_policy}
 \end{align}
 where $\hat{\pi}_{\mathcal{D}}$ inside the exponential function is learned to imitate the behavior policy to avoid $\pi_{\mathcal{D}} = 0$ leading to an unbounded log-policy.
@@ -425,7 +427,7 @@ The benefits of the in-sample softmax can be interpreted as (1) softmax is easie
 (2) the in-sample softmax policy \eq{\ref{eq:inac_policy}} can be seen as a KL-regularized policy and hence the dataset support constraint is satisfied.
 In fact, the support of $ \pi_{\datasetPolicy, k+1}$ should be exactly the same as $\datasetPolicy$ since $\exp(\frac{\cdot}{\tau}) > 0$ as long as $\tau \neq \infty$.
 We now explain why \eq{\ref{eq:inac_policy}} can be regarded as a KL-regularized policy: it can be decomposed into two terms:
-the first term $\datasetPolicy(a|s) \exp\AdaBracket{\frac{Q_{\datasetPolicy, k}(s,a)}{\tau} }$ acts as a KL-regularized policy with respect to the behavior policy; 
+the first term $\datasetPolicy(a|s) \exp\AdaBracket{\frac{Q_{t, \datasetPolicy}(s,a)}{\tau} }$ acts as a KL-regularized policy with respect to the behavior policy; 
 the second term $\exp\AdaBracket{-\ln\hat{\pi}_{\mathcal{D}}(a|s)}$ can be seen as induced by another regularization $-\sum_{a}{\pi(a|s)}{\ln{\hat{\pi}_{\mathcal{D}}(a|s)}}$, which is the cross entropy between the in-sample softmax policy and the (learned) behavior policy.
 
 However, the fact that the softmax policies always have full support indicates there is a persistent gap to \eq{\ref{eq:hardmax_offline}}.
@@ -442,7 +444,7 @@ We propose to replace the Shannon entropy in in-sample softmax to the Tsallis en
 The seemingly simple replacement, however, leads to drastically different behavior of the policy.
 Indeed, since we can control the truncation effect of the Tsallis regularized policies, we have the support of $\pi^{\text{Tsallis}}_{\datasetPolicy, k+1} \preceq \datasetPolicy$, i.e. the support of the learned policy is either equal or within the dataset support.
 
-Furthermore, Tsallis policies provide an means to formulate the common assumption that actions not present in the dataset are with low probability of being selected.
+Furthermore, Tsallis policies provide an means to formulate the common assumption that actions not present in the dataset are with low probability of being selected \cite{Kostrikov2021-fisherCriticReg}.
 If we assume the behavior policy is also a Tsallis policy, then the support constraint $a:\datasetPolicy(a|s)>0$ can be naturally replaced to the truncation criterion $a\in K(s)$; i.e.,
 \begin{align}
     \datasetPolicy(a|s) \propto \exp_q\AdaBracket{\frac{Q_{\datasetPolicy}(s,a)}{\tau_\mathcal{D}}},  \quad \sum_{a\in K_\mathcal{D}(s)} \pi_\mathcal{D}(a|s)= 1,
@@ -472,12 +474,27 @@ The power of the assumption manifests when we use also Tsallis regularized polic
 % Specifically, we propose to modify the learned policy form as 
 \begin{align}
     & \pi_{t+1, \datasetPolicy}(a|s) \propto \exp_q\AdaBracket{\frac{Q_{t, \datasetPolicy}(s,a)}{\tau}},  \quad \sum_{a\in K_{\mathcal{D}}(s)} \pi_{t+1, \datasetPolicy} = 1.\\
-    Q_{t+1, \datasetPolicy}(s,a) &= r(s,a) +  \gamma \expectation{s'\sim P(\cdot | s,a)}{ \sum_{a' \in K_{\mathcal{D}}(s)} \!\!\!\!\! \pi_{t}(a'|s') \AdaBracket{Q_{t, \datasetPolicy}(s',a') - \tau S_q(\pi_{t}(\cdot|s'))}}.
+    Q_{t+1, \datasetPolicy}(s,a) &= r(s,a) +  \gamma \expectation{s'\sim P(\cdot | s,a)}{ \sum_{a' \in K_{\mathcal{D}}(s)} \!\!\!\!\! \pi_{t+1}(a'|s') \AdaBracket{Q_{t, \datasetPolicy}(s',a') - \tau S_q(\pi_{t+1}(\cdot|s'))}}.
     \label{eq:proposal_policy}
 \end{align}
-The learned Tsallis policy maintains a new set of allowable actions $K_{t, q}$ depending on $q$ and iteration $t$.
+The term inside the bracket is known as $q$-maximum \cite{Lee2020-generalTsallisRSS}.
+Similar to the softmax operators \cite{asadi17a,azar2012dynamic}, $q$-maximum is an approximation to the maximum with degree controlled by $q$.
+
+More importantly, the support constraint is naturally satisfied since 
+the learned Tsallis policy learns a new set of allowable actions $K_{t, q}$ from $K_\mathcal{D}(s)$ depending on $q$ and iteration $t$.
 The set satisfies the condition $K_{t, q} \preceq K_\mathcal{D}$:
  i.e. $|K_{t, q}| \leq |K_\mathcal{D}|$ and support constraint $\pi_t \preceq \datasetPolicy$.
+ Let us take $q=2$ for example:
+ \begin{align}
+    \begin{split}
+    &Q_{t+1, \datasetPolicy}(s,a) = r(s,a) +  \gamma \expectation{s'\sim P(\cdot | s,a)}{ \sum_{a' \in K_{\mathcal{D}}(s)} \!\!\!\!\! \pi_{t+1}(a'|s') \AdaBracket{Q_{t, \datasetPolicy}(s',a') - \tau S_2(\pi_{t+1}(\cdot|s'))}}\\
+    &\qquad = r(s,a) + \gamma \expectation{s'\sim P(\cdot | s,a)}{ \tau\sum_{a' \in K_{\mathcal{D}}(s)} \!\! \AdaBracket{\frac{Q_{t, \datasetPolicy}(s',a')}{\tau}}^2 - \AdaBracket{ \psi\AdaBracket{\frac{Q_{t, \datasetPolicy}(s',a')}{\tau}} - 1 }^2 + \tau}\\
+    &\qquad = r(s,a) + \gamma \expectation{s'\sim P(\cdot | s,a)}{ \tau\sum_{a' \in K_{t,q}(s)} \!\! \AdaBracket{\frac{Q_{t, \datasetPolicy}(s',a')}{\tau}}^2 - \AdaBracket{ \psi\AdaBracket{\frac{Q_{t, \datasetPolicy}(s',a')}{\tau}} - 1 }^2 + \tau}.
+    \end{split}
+    \label{eq:tsallis_backward_q2}
+ \end{align}
+ The second equation is because $\max_{\pi}\sum_{a\in\pi(\cdot|s)}\pi(a|s)Q(s,a) - \tau S_2(\pi(\cdot|s))$ attains its maximum at $\tau \sum_{a \in K(s)}\AdaBracket{ \frac{Q(s,a)}{\tau} }^2 - \psi\AdaBracket{\frac{Q(s, \cdot)}{\tau}}^2 + \tau$ \cite{Lee2018-TsallisRAL,Martins16-sparsemax}, and the last equation is due to $K_{t, q} \preceq K_\mathcal{D}$.
+ \eq{\ref{eq:tsallis_backward_q2}} states that, one needs not to explicitly enforce the support constraint since it is automatically fulfilled by learning a new subset of allowable actions.
 % That is, the backward Bellman optimality equation becomes:
 % \begin{align}
 %     \begin{split}
@@ -562,7 +579,8 @@ We now work with (3):
 \end{align}
 Putting all terms together, we arrive at the upper bound that 
 \begin{align*}
-    \KLany{\pi_t(\cdot|s)}{\datasetPolicy(\cdot|s)} \leq K_{t}(s)\! \AdaRectBracket{  { \pi_{t}^{q}(a|s) - \pi_{t}^{q-1} (a|s) } + \pi_t(a|s) - \frac{q-3}{q-1}  + \datasetPolicy^{q-2}(a|s) - \datasetPolicy^{q-1}(a|s)}.
+    \KLany{\pi_t(\cdot|s)}{\datasetPolicy(\cdot|s)} &\leq \!\!\!\!\!\! \sum_{a\in K_{t,q}(s)}\!\!\!\!\! \pi_t(a|s)\AdaRectBracket{  { \pi_{t}^{q}(a|s) - \pi_{t}^{q-1} (a|s) } + \pi_t(a|s) - \frac{q-3}{q-1}  + \datasetPolicy^{q-2}(a|s) - \datasetPolicy^{q-1}(a|s)} \\
+    &\leq K_{t,q}(s)\!\AdaRectBracket{  { \pi_{t}^{q}(a|s) - \pi_{t}^{q-1} (a|s) } + \pi_t(a|s) - \frac{q-3}{q-1}  + \datasetPolicy^{q-2}(a|s) - \datasetPolicy^{q-1}(a|s)}.
 \end{align*}
 
 \end{proof}
@@ -581,9 +599,9 @@ Similar to \cite{Xiao2023-InSampleSoftmax}, we want to directly use the actions 
 We do a similar step to \eq{\ref{eq:inac_policy}}:
 \begin{align}
     \begin{split}
-        &\pi_{\datasetPolicy, k+1} (a|s) \propto \exp_q \AdaBracket{\frac{1}{\tau} Q_{t, \datasetPolicy}(s,a)} = \datasetPolicy(a|s) \datasetPolicy(a|s)^{-1} \exp_q\AdaBracket{\frac{1}{\tau}Q_{t, \datasetPolicy}(s,a)} \\
+        &\pi_{t+1,\datasetPolicy} (a|s) \propto \exp_q \AdaBracket{\frac{1}{\tau} Q_{t, \datasetPolicy}(s,a)} = \datasetPolicy(a|s) \datasetPolicy(a|s)^{-1} \exp_q\AdaBracket{\frac{1}{\tau}Q_{t, \datasetPolicy}(s,a)} \\
         &= \datasetPolicy(a|s)  \exp_q{\AdaBracket{\ln_q{\frac{1}{\datasetPolicy(a|s)}}}} \exp_q\AdaBracket{\frac{1}{\tau}Q_{t, \datasetPolicy}(s,a)}\\
-        &=  \datasetPolicy(a|s) {\AdaBracket{ \exp_q\AdaBracket{\frac{1}{\tau}Q_{t, \datasetPolicy}(s,a) + \ln_2\frac{1}{\datasetPolicy(a|s)}}^{q-1} - (q-1)^2 \frac{1}{\tau}Q_{t, \datasetPolicy}(s,a)  \ln_q{\frac{1}{\datasetPolicy(a|s)}} }^{\frac{1}{q-1}}}.
+        &=  \datasetPolicy(a|s) {\AdaBracket{ \exp_q\AdaBracket{\frac{1}{\tau}Q_{t, \datasetPolicy}(s,a) + \ln_q\frac{1}{\datasetPolicy(a|s)}}^{q-1} - (q-1)^2 \frac{1}{\tau}Q_{t, \datasetPolicy}(s,a)  \ln_q{\frac{1}{\datasetPolicy(a|s)}} }^{\frac{1}{q-1}}}.
         \label{eq:tsallis_inac_policy_thoery}
     \end{split}
 \end{align}
