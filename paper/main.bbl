@@ -1,9 +1,17 @@
-\begin{thebibliography}{19}
+\begin{thebibliography}{28}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Asadi and Littman(2017)]{asadi17a}
+K.~Asadi and M.~L. Littman.
+\newblock An alternative softmax operator for reinforcement learning.
+\newblock In \emph{Proceedings of the 34th International Conference on Machine
+  Learning (ICML)}, volume~70 of \emph{Proceedings of Machine Learning
+  Research}, pages 243--252, International Convention Centre, Sydney,
+  Australia, 06--11 Aug 2017. PMLR.
 
 \bibitem[Azar et~al.(2012)Azar, G{\'{o}}mez, and Kappen]{azar2012dynamic}
 M.~G. Azar, V.~G{\'{o}}mez, and H.~J. Kappen.
@@ -18,13 +26,31 @@ M.~Blondel, A.~F. Martins, and V.~Niculae.
 \newblock \emph{Journal of Machine Learning Research}, 21\penalty0
   (35):\penalty0 1--69, 2020.
 
-\bibitem[Chan et~al.(2022)Chan, Silva, Lim, Kozuno, Mahmood, and
-  White]{chan2021-greedification}
-A.~Chan, H.~Silva, S.~Lim, T.~Kozuno, A.~R. Mahmood, and M.~White.
-\newblock Greedification operators for policy optimization: Investigating
-  forward and reverse kl divergences.
-\newblock \emph{Journal of Machine Learning Research}, 23\penalty0
-  (253):\penalty0 1--79, 2022.
+\bibitem[Chen et~al.(2018)Chen, Peng, and Zhang]{chen2018-TsallisApproximate}
+G.~Chen, Y.~Peng, and M.~Zhang.
+\newblock Effective exploration for deep reinforcement learning via
+  bootstrapped q-ensembles under tsallis entropy regularization.
+\newblock \emph{arXiv:abs/1809.00403}, 2018.
+\newblock URL \url{http://arxiv.org/abs/1809.00403}.
+
+\bibitem[Chow et~al.(2018)Chow, Nachum, and Ghavamzadeh]{Nachum18a-tsallis}
+Y.~Chow, O.~Nachum, and M.~Ghavamzadeh.
+\newblock Path consistency learning in {T}sallis entropy regularized {MDP}s.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  979--988, 2018.
+
+\bibitem[Dadashi et~al.(2021)Dadashi, Rezaeifar, Vieillard, Hussenot, Pietquin,
+  and Geist]{Dadashi2021-pseudoMetricOffline}
+R.~Dadashi, S.~Rezaeifar, N.~Vieillard, L.~Hussenot, O.~Pietquin, and M.~Geist.
+\newblock Offline reinforcement learning with pseudometric learning.
+\newblock In \emph{Proceedings of the 38th International Conference on Machine
+  Learning}, pages 2307--2318, 2021.
+
+\bibitem[Fujimoto and Gu(2021)]{Fujimoto2021-minimalist}
+S.~Fujimoto and S.~S. Gu.
+\newblock A minimalist approach to offline reinforcement learning.
+\newblock In \emph{Thirty-Fifth Conference on Neural Information Processing
+  Systems}, 2021.
 
 \bibitem[Fujimoto et~al.(2019)Fujimoto, Meger, and
   Precup]{Fujimoto2019-InSampleMax}
@@ -33,32 +59,50 @@ S.~Fujimoto, D.~Meger, and D.~Precup.
 \newblock In \emph{Proceedings of the 36th International Conference on Machine
   Learning}, pages 2052--2062, 2019.
 
-\bibitem[Geist et~al.(2019)Geist, Scherrer, and Pietquin]{geist19-regularized}
-M.~Geist, B.~Scherrer, and O.~Pietquin.
-\newblock A theory of regularized {M}arkov decission processes.
-\newblock In \emph{36th International Conference on Machine Learning},
-  volume~97, pages 2160--2169, 2019.
+\bibitem[Ghasemipour et~al.(2021)Ghasemipour, Schuurmans, and
+  Gu]{Ghasemipour2021-EMaQ}
+S.~K.~S. Ghasemipour, D.~Schuurmans, and S.~S. Gu.
+\newblock Emaq: Expected-max q-learning operator for simple yet effective
+  offline and online rl.
+\newblock In \emph{Proceedings of the 38th International Conference on Machine
+  Learning}, volume 139, pages 3682--3691, 2021.
 
-\bibitem[Hiriart-Urruty and Lemar{\'e}chal(2004)]{hiriart2004-convexanalysis}
-J.~Hiriart-Urruty and C.~Lemar{\'e}chal.
-\newblock \emph{Fundamentals of Convex Analysis}.
-\newblock Grundlehren Text Editions. Springer Berlin Heidelberg, 2004.
+\bibitem[Gulcehre et~al.(2021)Gulcehre, Colmenarejo, Wang, Sygnowski, Paine,
+  Zolna, Chen, Hoffman, Pascanu, and
+  de~Freitas]{Gulcehre2021-regularizedBehavior}
+C.~Gulcehre, S.~G. Colmenarejo, Z.~Wang, J.~Sygnowski, T.~Paine, K.~Zolna,
+  Y.~Chen, M.~Hoffman, R.~Pascanu, and N.~de~Freitas.
+\newblock Regularized behavior value estimation, 2021.
 
-\bibitem[Kozuno et~al.(2019)Kozuno, Uchibe, and Doya]{kozunoCVI}
-T.~Kozuno, E.~Uchibe, and K.~Doya.
-\newblock Theoretical analysis of efficiency and robustness of softmax and
-  gap-increasing operators in reinforcement learning.
-\newblock In \emph{Proceedings of the Twenty-Second International Conference on
-  Artificial Intelligence and Statistics}, volume~89, pages 2995--3003, 2019.
+\bibitem[Jaques et~al.(2020)Jaques, Ghandeharioun, Shen, Ferguson, Lapedriza,
+  Jones, Gu, and Picard]{Jaques2020-OfflineDialog}
+N.~Jaques, A.~Ghandeharioun, J.~H. Shen, C.~Ferguson, A.~Lapedriza, N.~Jones,
+  S.~Gu, and R.~Picard.
+\newblock Way off-policy batch deep reinforcement learning of human preferences
+  in dialog, 2020.
+\newblock URL \url{https://openreview.net/forum?id=rJl5rRVFvH}.
 
-\bibitem[Kozuno et~al.(2022)Kozuno, Yang, Vieillard, Kitamura, Tang, Mei,
-  Ménard, Azar, Valko, Munos, Pietquin, Geist, and
-  Szepesvári]{Kozuno-2022-KLGenerativeMinMaxOptimal}
-T.~Kozuno, W.~Yang, N.~Vieillard, T.~Kitamura, Y.~Tang, J.~Mei, P.~Ménard,
-  M.~G. Azar, M.~Valko, R.~Munos, O.~Pietquin, M.~Geist, and C.~Szepesvári.
-\newblock Kl-entropy-regularized rl with a generative model is minimax optimal,
-  2022.
-\newblock URL \url{https://arxiv.org/abs/2205.14211}.
+\bibitem[Kostrikov et~al.(2021)Kostrikov, Fergus, Tompson, and
+  Nachum]{Kostrikov2021-fisherCriticReg}
+I.~Kostrikov, R.~Fergus, J.~Tompson, and O.~Nachum.
+\newblock Offline reinforcement learning with fisher divergence critic
+  regularization.
+\newblock In \emph{Proceedings of the 38th International Conference on Machine
+  Learning}, pages 5774--5783, 2021.
+
+\bibitem[Kostrikov et~al.(2022)Kostrikov, Nair, and
+  Levine]{Kostrikov2022-implicitQlearning}
+I.~Kostrikov, A.~Nair, and S.~Levine.
+\newblock Offline reinforcement learning with implicit q-learning.
+\newblock In \emph{International Conference on Learning Representations}, 2022.
+\newblock URL \url{https://openreview.net/forum?id=68n2s9ZJWF8}.
+
+\bibitem[Kumar et~al.(2019)Kumar, Fu, Tucker, and
+  Levine]{Kumar2019-BootstrapErrorQlearningMMD}
+A.~Kumar, J.~Fu, G.~Tucker, and S.~Levine.
+\newblock \emph{Stabilizing Off-Policy Q-Learning via Bootstrapping Error
+  Reduction}.
+\newblock 2019.
 
 \bibitem[Lee et~al.(2018)Lee, Choi, and Oh]{Lee2018-TsallisRAL}
 K.~Lee, S.~Choi, and S.~Oh.
@@ -81,11 +125,25 @@ A.~F.~T. Martins and R.~F. Astudillo.
 \newblock In \emph{Proceedings of the 33rd International Conference on Machine
   Learning}, page 1614–1623, 2016.
 
-\bibitem[Nachum and Dai(2020)]{Nachum2020-RLFenchelRockafellar}
-O.~Nachum and B.~Dai.
-\newblock Reinforcement learning via fenchel-rockafellar duality.
-\newblock 2020.
-\newblock URL \url{http://arxiv.org/abs/2001.01866}.
+\bibitem[Nair et~al.(2021)Nair, Dalal, Gupta, and Levine]{Nair2021-awac}
+A.~Nair, M.~Dalal, A.~Gupta, and S.~Levine.
+\newblock {\{}AWAC{\}}: Accelerating online reinforcement learning with offline
+  datasets, 2021.
+\newblock URL \url{https://openreview.net/forum?id=OJiM1R3jAtZ}.
+
+\bibitem[Puterman(1994)]{Puterman1994}
+M.~L. Puterman.
+\newblock \emph{Markov Decision Processes: Discrete Stochastic Dynamic
+  Programming}.
+\newblock John Wiley \& Sons, Inc., New York, NY, USA, 1st edition, 1994.
+
+\bibitem[Rawlik et~al.(2013)Rawlik, Toussaint, and
+  Vijayakumar]{Rawlik2013-SOCRL}
+K.~Rawlik, M.~Toussaint, and S.~Vijayakumar.
+\newblock On stochastic optimal control and reinforcement learning by
+  approximate inference (extended abstract).
+\newblock In \emph{Proceedings of the Twenty-Third International Joint
+  Conference on Artificial Intelligence}, IJCAI ’13, page 3052–3056, 2013.
 
 \bibitem[Tsai et~al.(2021)Tsai, Ma, Yang, Zhao, Morency, and
   Salakhutdinov]{Tsai2021-selfsupervisedRelativePredictiveCoding}
@@ -113,6 +171,11 @@ N.~Vieillard, T.~Kozuno, B.~Scherrer, O.~Pietquin, R.~Munos, and M.~Geist.
 \newblock Leverage the average: an analysis of regularization in rl.
 \newblock In \emph{Advances in Neural Information Processing Systems 33}, pages
   1--12, 2020.
+
+\bibitem[Wu et~al.(2020)Wu, Tucker, and Nachum]{Wu2020-BehaviorRegularizedAC}
+Y.~Wu, G.~Tucker, and O.~Nachum.
+\newblock Behavior regularized offline reinforcement learning, 2020.
+\newblock URL \url{https://openreview.net/forum?id=BJg9hTNKPH}.
 
 \bibitem[Xiao et~al.(2023)Xiao, Wang, Pan, White, and
   White]{Xiao2023-InSampleSoftmax}

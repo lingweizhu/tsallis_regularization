@@ -30,7 +30,8 @@ class TsallisInAC(base.Agent):
                  use_target_network,
                  target_network_update_freq,
                  evaluation_criteria,
-                 logger
+                 logger,
+                 q
                  ):
         super(TsallisInAC, self).__init__(
             exp_path=exp_path,
@@ -99,9 +100,11 @@ class TsallisInAC(base.Agent):
 
         self.tau = tau
         self.polyak = polyak
-        self.q = 2.0
+
+        self.q = q
         self.fill_offline_data_to_buffer(offline_data)
         self.offline_param_init(offline_data)
+
         return
 
     def compute_loss_beh_pi(self, data):
@@ -117,7 +120,7 @@ class TsallisInAC(base.Agent):
         v_phi = self.value_net(states).squeeze(-1)
         with torch.no_grad():
             actions, _ = self.ac.pi(states)
-            logq_probs = self.ac.pi.get_logq_prob(states, actions)
+            logq_probs = self.ac.pi.get_logq_prob(states, actions, self.q)
             min_Q, _, _ = self.get_q_value_target(states, actions)
         target = min_Q - self.tau * logq_probs
         value_loss = (0.5 * (v_phi - target) ** 2).mean()
@@ -132,7 +135,7 @@ class TsallisInAC(base.Agent):
         states, actions, rewards, next_states, dones = data['obs'], data['act'], data['reward'], data['obs2'], data['done']
         with torch.no_grad():
             next_actions, _ = self.ac.pi(next_states)
-            logq_probs = self.ac.pi.get_logq_prob(next_states, next_actions)
+            logq_probs = self.ac.pi.get_logq_prob(next_states, next_actions, self.q)
         next_q_values, _, _ = self.get_q_value_target(next_states, next_actions)
         q_target = rewards + self.gamma * (1 - dones) * (next_q_values - self.tau * logq_probs)
     
@@ -154,6 +157,9 @@ class TsallisInAC(base.Agent):
         update towards the policy: pi_D exp_q(Q) pi_D^{-1}
         the first pi_D is absorbed into expectation, the rest becomes
         [exp_q( Q - Psi + ln_q(pi_D^-1) )^(q-1) + (q-1)^2 (Q-Psi) ln_q(pi_D^-1)]^(1/(q-1))
+        
+        Future:
+        Psi should be learned. Estimating it using value could render policy zero everywhere
         '''
         with torch.no_grad():
             beh_prob = torch.clip(torch.exp(self.beh_pi.get_logprob(states, actions)), min=self.eps)
@@ -173,6 +179,7 @@ class TsallisInAC(base.Agent):
         '''                
         x = min_Q / self.tau
         y = self.ac.pi.logq_x(beh_prob**(-1), self.q)
+
         tsallis_policy = torch.pow(self.ac.pi.expq_x(x + y, self.q)**(self.q-1) + (self.q - 1)**2 * x * y, 1/(self.q-1))
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
         pi_loss = -(clipped * log_probs).mean()

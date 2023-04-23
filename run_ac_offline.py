@@ -5,6 +5,7 @@ import core.environment.env_factory as environment
 from core.utils import torch_utils, logger, run_funcs
 from core.agent.in_sample import *
 from core.agent.tsallis_inac import *
+from core.agent.tsallis_fdiv_inac import *
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="run_file")
@@ -15,8 +16,6 @@ if __name__ == '__main__':
     parser.add_argument('--state_dim', default=1, type=int)
     parser.add_argument('--action_dim', default=1, type=int)
     parser.add_argument('--tau', default=0.1, type=float)
-    parser.add_argument('--alpha', default=0.9, type=float)
-    
     parser.add_argument('--max_steps', default=1000000, type=int)
     parser.add_argument('--log_interval', default=10000, type=int)
     parser.add_argument('--learning_rate', default=3e-4, type=float)
@@ -30,6 +29,8 @@ if __name__ == '__main__':
     parser.add_argument('--evaluation_criteria', default='return', type=str)
     parser.add_argument('--device', default='cpu', type=str)
     parser.add_argument('--info', default='0', type=str)
+    # parser.add_argument('--mode', default='reverse_jensen_shannon', type=str)
+    parser.add_argument('--q', default=2.0, type=float)
     cfg = parser.parse_args()
 
     torch_utils.set_one_thread()
@@ -48,7 +49,9 @@ if __name__ == '__main__':
     logger.log_config(cfg)
 
     # Initializing the agent and running the experiment
+    # agent_obj = InSampleAC(
     agent_obj = TsallisInAC(
+    # agent_obj = TsallisFdivInAC(
         device=cfg.device,
         discrete_control=cfg.discrete_control,
         state_dim=cfg.state_dim,
@@ -67,6 +70,8 @@ if __name__ == '__main__':
         use_target_network=cfg.use_target_network,
         target_network_update_freq=cfg.target_network_update_freq,
         evaluation_criteria=cfg.evaluation_criteria,
-        logger=cfg.logger
+        logger=cfg.logger,
+        q=cfg.q,
+        # mode=cfg.mode,
     )
     run_funcs.run_steps(agent_obj, cfg.max_steps, cfg.log_interval, exp_path)
