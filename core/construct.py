@@ -38,7 +38,9 @@ def construct_TsallisInAC(config, exp_path, env_fn, offline_data, logger):
 
         tau=config["tau"],
         polyak=config["polyak"],
-        gamma=config["gamma"])
+        gamma=config["gamma"],
+        q=config["q"],
+        normalize=config["normalize"])
 
 
 def construct_InSampleAC(config, exp_path, env_fn, offline_data, logger):

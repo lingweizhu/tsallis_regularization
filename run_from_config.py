@@ -48,7 +48,7 @@ def run_experiment(config_file, job_id, base_save_dir, num_threads):
     # Save Path
     exp_path = cfg.get_save_dir_and_save_config(
         parsed.base_save_dir,
-        preformat_args=["env_name", "dataset"],
+        preformat_args=["env_name", "dataset", "agent_name"],
         postformat_args=["run"],
         arg_hash=True,
         extra_hash_ignore=["seed", "run"])
@@ -71,7 +71,6 @@ def run_experiment(config_file, job_id, base_save_dir, num_threads):
         offline_data=offline_data,
         logger=lggr)
 
-    # here we need to capture errors and still return an error if we fail (for gnu-parallel).
     try:
         run_funcs.run_steps(agent_obj,
                             cfg["max_steps"],
