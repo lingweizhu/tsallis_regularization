@@ -48,7 +48,7 @@ def run_experiment(config_file, job_id, base_save_dir, num_threads):
     # Save Path
     exp_path = cfg.get_save_dir_and_save_config(
         parsed.base_save_dir,
-        preformat_args=["env_name", "dataset", "agent_name"],
+        preformat_args=["env_name", "dataset"],
         postformat_args=["run"],
         arg_hash=True,
         extra_hash_ignore=["seed", "run"])
