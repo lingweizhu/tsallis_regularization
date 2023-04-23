@@ -29,7 +29,7 @@ if __name__ == '__main__':
     parser.add_argument('--evaluation_criteria', default='return', type=str)
     parser.add_argument('--device', default='cpu', type=str)
     parser.add_argument('--info', default='0', type=str)
-    # parser.add_argument('--mode', default='reverse_jensen_shannon', type=str)
+    parser.add_argument('--normalize', default=True, type=bool)
     parser.add_argument('--q', default=2.0, type=float)
     cfg = parser.parse_args()
 
@@ -49,9 +49,7 @@ if __name__ == '__main__':
     logger.log_config(cfg)
 
     # Initializing the agent and running the experiment
-    # agent_obj = InSampleAC(
     agent_obj = TsallisInAC(
-    # agent_obj = TsallisFdivInAC(
         device=cfg.device,
         discrete_control=cfg.discrete_control,
         state_dim=cfg.state_dim,
@@ -72,6 +70,6 @@ if __name__ == '__main__':
         evaluation_criteria=cfg.evaluation_criteria,
         logger=cfg.logger,
         q=cfg.q,
-        # mode=cfg.mode,
+        normalize=cfg.normalize,
     )
     run_funcs.run_steps(agent_obj, cfg.max_steps, cfg.log_interval, exp_path)

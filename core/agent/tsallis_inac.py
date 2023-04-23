@@ -31,7 +31,8 @@ class TsallisInAC(base.Agent):
                  target_network_update_freq,
                  evaluation_criteria,
                  logger,
-                 q
+                 q,
+                 normalize,
                  ):
         super(TsallisInAC, self).__init__(
             exp_path=exp_path,
@@ -102,6 +103,7 @@ class TsallisInAC(base.Agent):
         self.polyak = polyak
 
         self.q = q
+        self.normalize = normalize
         self.fill_offline_data_to_buffer(offline_data)
         self.offline_param_init(offline_data)
 
@@ -163,9 +165,8 @@ class TsallisInAC(base.Agent):
         '''
         with torch.no_grad():
             beh_prob = torch.clip(torch.exp(self.beh_pi.get_logprob(states, actions)), min=self.eps)
-            # value = self.get_state_value(states)
-            # Psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - 0.5*self.tau)/0.5*self.tau, min=0))
-        # x = min_Q/self.tau - Psi
+            value = self.get_state_value(states)
+            Psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - self.tau)/self.tau, min=0))
         '''why we do not use Psi 
         we are assuming that actions not in the dataset are truncated 
         by Tsallis behavior policies. So when presented with these actions in the dataset,
@@ -177,7 +178,11 @@ class TsallisInAC(base.Agent):
         '''
         x = Q, y = ln_q pi_D^-1
         '''                
-        x = min_Q / self.tau
+        if self.normalize:
+            x = min_Q/self.tau - Psi
+        else:
+            x = min_Q / self.tau
+
         y = self.ac.pi.logq_x(beh_prob**(-1), self.q)
 
         tsallis_policy = torch.pow(self.ac.pi.expq_x(x + y, self.q)**(self.q-1) + (self.q - 1)**2 * x * y, 1/(self.q-1))
