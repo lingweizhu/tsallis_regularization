@@ -23,7 +23,7 @@ polyak=0.995
 
 gamma=0.99
 q=2
-normalize=True
+normalize=false
 
 use_target_network=1
 target_network_update_freq=1
