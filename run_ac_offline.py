@@ -31,9 +31,10 @@ if __name__ == '__main__':
     parser.add_argument('--info', default='0', type=str)
     parser.add_argument('--normalize', default=True, type=bool)
     parser.add_argument('--q', default=2.0, type=float)
+    parser.add_argument('--beh_clip', default=1e-8, type=float)
     cfg = parser.parse_args()
 
-    torch_utils.set_one_thread()
+    torch_utils.set_thread_count()
 
     torch_utils.random_seed(cfg.seed)
     
@@ -71,5 +72,6 @@ if __name__ == '__main__':
         logger=cfg.logger,
         q=cfg.q,
         normalize=cfg.normalize,
+        beh_clip=cfg.beh_clip,
     )
     run_funcs.run_steps(agent_obj, cfg.max_steps, cfg.log_interval, exp_path)
