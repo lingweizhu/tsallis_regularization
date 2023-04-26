@@ -40,7 +40,9 @@ def construct_TsallisInAC(config, exp_path, env_fn, offline_data, logger):
         polyak=config["polyak"],
         gamma=config["gamma"],
         q=config["q"],
-        normalize=config["normalize"])
+        normalize=config["normalize"],
+        beh_clip=config["beh_clip"]
+    )
 
 
 def construct_InSampleAC(config, exp_path, env_fn, offline_data, logger):
