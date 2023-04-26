@@ -32,8 +32,6 @@ class TsallisInAC(base.Agent):
                  evaluation_criteria,
                  logger,
                  q,
-                 normalize,
-                 beh_clip,
                  ):
         super(TsallisInAC, self).__init__(
             exp_path=exp_path,
@@ -104,8 +102,6 @@ class TsallisInAC(base.Agent):
         self.polyak = polyak
 
         self.q = q
-        self.normalize = normalize
-        self.beh_clip = beh_clip
         self.fill_offline_data_to_buffer(offline_data)
         self.offline_param_init(offline_data)
 
@@ -166,10 +162,9 @@ class TsallisInAC(base.Agent):
         Psi should be learned. Estimating it using value could render policy zero everywhere
         '''
         with torch.no_grad():
-            beh_prob = torch.clip(torch.exp(self.beh_pi.get_logprob(states, actions)), min=self.beh_clip)
-            value = self.get_state_value(states)
-            # Psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - self.tau)/self.tau, min=0))
-        '''why we do not use Psi 
+            beh_prob = torch.clip(torch.exp(self.beh_pi.get_logprob(states, actions)), min=self.eps)
+            
+        '''why we do not normalize
         we are assuming that actions not in the dataset are truncated 
         by Tsallis behavior policies. So when presented with these actions in the dataset,
         there is no need to do a second round of truncation.  
@@ -180,16 +175,14 @@ class TsallisInAC(base.Agent):
         '''
         x = Q, y = ln_q pi_D^-1
         '''                
-        if self.normalize:
-            x = min_Q/self.tau - value
-        else:
-            x = min_Q / self.tau
+
+        x = min_Q / self.tau
 
         y = self.ac.pi.logq_x(beh_prob**(-1), self.q)
 
-        tsallis_policy = torch.pow(self.ac.pi.expq_x(x + y, self.q)**(self.q-1) + (self.q - 1)**2 * x * y, 1/(self.q-1))
+
+        tsallis_policy= torch.pow(self.ac.pi.expq_x(x + y, self.q)**(self.q-1) + (self.q - 1)**2 * x * y, 1/(self.q-1))
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
-        # print(f"x : {x}, value: {value}, y: {y}, policy: {tsallis_policy}")
         pi_loss = -(clipped * log_probs).mean()
         return pi_loss, ""
     
