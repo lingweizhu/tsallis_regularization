@@ -5,7 +5,7 @@ import core.environment.env_factory as environment
 from core.utils import torch_utils, logger, run_funcs
 from core.agent.in_sample import *
 from core.agent.tsallis_inac import *
-from core.agent.tsallis_fdiv_inac import *
+from core.agent.tkl_inac import *
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="run_file")
@@ -30,6 +30,7 @@ if __name__ == '__main__':
     parser.add_argument('--device', default='cpu', type=str)
     parser.add_argument('--info', default='0', type=str)
     parser.add_argument('--q', default=2.0, type=float)
+    parser.add_argument('--alpha', default=0.9, type=float)
     cfg = parser.parse_args()
 
     torch_utils.set_thread_count()
@@ -48,7 +49,7 @@ if __name__ == '__main__':
     logger.log_config(cfg)
 
     # Initializing the agent and running the experiment
-    agent_obj = TsallisInAC(
+    agent_obj = TsallisKLInAC(     
         device=cfg.device,
         discrete_control=cfg.discrete_control,
         state_dim=cfg.state_dim,
@@ -69,5 +70,6 @@ if __name__ == '__main__':
         evaluation_criteria=cfg.evaluation_criteria,
         logger=cfg.logger,
         q=cfg.q,
+        alpha=cfg.alpha,
     )
     run_funcs.run_steps(agent_obj, cfg.max_steps, cfg.log_interval, exp_path)
