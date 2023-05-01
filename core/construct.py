@@ -1,7 +1,9 @@
 from core.agent.tsallis_inac import TsallisInAC
+from core.agent.tkl_inac import TsallisKLInAC
 from core.agent.in_sample import InSampleAC
 import inspect
 import sys
+
 
 
 def construct_agent(config, **kwargs):
@@ -41,6 +43,35 @@ def construct_TsallisInAC(config, exp_path, env_fn, offline_data, logger):
         gamma=config["gamma"],
         q=config["q"],
     )
+
+def construct_TsallisKLInAC(config, exp_path, env_fn, offline_data, logger):
+    return TsallisKLInAC(
+        device=config["device"],
+        discrete_control=config["discrete_control"],
+        exp_path=exp_path,  # config["exp_path"],
+        seed=config["seed"],
+        timeout=config["timeout"],
+        logger=logger,
+
+        env_fn=env_fn,
+        offline_data=offline_data,
+        evaluation_criteria=config["evaluation_criteria"],
+
+        state_dim=config["state_dim"],
+        action_dim=config["action_dim"],
+
+        hidden_units=config["hidden_units"],
+        learning_rate=config["learning_rate"],
+
+        batch_size=config["batch_size"],
+        use_target_network=config["use_target_network"],
+        target_network_update_freq=config["target_network_update_freq"],
+
+        tau=config["tau"],
+        polyak=config["polyak"],
+        gamma=config["gamma"],
+        q=config["q"],
+        alpha=config["alpha"])
 
 
 def construct_InSampleAC(config, exp_path, env_fn, offline_data, logger):
