@@ -2,7 +2,7 @@
 #SBATCH --account=rrg-whitem
 #SBATCH --mail-user=mkschleg@ualberta.ca
 #SBATCH --mail-type=ALL
-#SBATCH --signal=USR1@90
+#SBATCH --signal=B:TERM@90
 #SBATCH -o job_out/%x_%a.out # Standard output
 #SBATCH -e job_out/%x_%a.err # Standard error
 
@@ -13,7 +13,7 @@
 # $1 = configuration file
 
 
-source /project/6010404/mkschleg/tsallis_inac/TSALLIS_INAC/bin/activate
+source /home/mkschleg/virtenv/TSALLIS_INAC/bin/activate
 ### USE
 # Need to specify job name, array parameters, and number of tasks per node (split so we can fit a good amount of jobs"
 # sbatch -J <job_name> --array=0-10 run_config_array.sh 
@@ -21,12 +21,10 @@ source /project/6010404/mkschleg/tsallis_inac/TSALLIS_INAC/bin/activate
 # $1 = configuration file
 # $2 = base_save_dir
 
-source /project/6010404/mkschleg/tsallis_inac/TSALLIS_INAC/bin/activate
-
 mkdir "parallel-logs/${SLURM_JOB_NAME}"
 
 JOB_LOG="parallel-logs/${SLURM_JOB_NAME}/${SLURM_ARRAY_TASK_ID}.log"
-PARALLEL_CONFIGS="--delay .2 -j ${SLURM_NTASKS} --joblog ${JOB_LOG}"
+PARALLEL_CONFIGS="--delay .2 -j ${SLURM_NTASKS} --joblog ${JOB_LOG} --termseq USR1,200,TERM,100,KILL,25"
 SRUN_CONFIGS="-N 1 -n 1 --exclusive" # 1 CPU per job?
 
 output_str=`python run_from_config.py --id 0 --config $1 --base_save_dir ~/tmp --get_num_jobs`
@@ -47,5 +45,5 @@ echo "NUM TOTAL JOBS: $NUM_JOBS"
 echo "ARRAY TASK: $SLURM_ARRAY_TASK_ID"
 echo "SEQUENCE RAN: $SEQUENCE"
 
-parallel $PARALLEL_CONFIGS srun $SRUN_CONFIGS python run_from_config.py --id {1} --config $CONFIG_FILE --base_save_dir $2  ::: $SEQUENCE
-
+# parallel $PARALLEL_CONFIGS srun $SRUN_CONFIGS python run_from_config_runner.py --id {1} --config $CONFIG_FILE --base_save_dir $2  ::: $SEQUENCE
+parallel $PARALLEL_CONFIGS python run_from_config_runner.py --id {1} --config $CONFIG_FILE --base_save_dir $2 --num_threads $SLURM_CPUS_PER_TASK  ::: $SEQUENCE
