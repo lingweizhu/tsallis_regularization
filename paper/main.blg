@@ -5,45 +5,45 @@ The style file: abbrvnat.bst
 Database file #1: library.bib
 Warning--empty chapter and pages in Kumar2019-BootstrapErrorQlearningMMD
 Warning--empty publisher in Kumar2019-BootstrapErrorQlearningMMD
-You've used 28 entries,
+You've used 29 entries,
             2773 wiz_defined-function locations,
-            769 strings with 11182 characters,
-and the built_in function-call counts, 15454 in all, are:
-= -- 1329
-> -- 1021
+            778 strings with 11379 characters,
+and the built_in function-call counts, 15968 in all, are:
+= -- 1374
+> -- 1051
 < -- 19
-+ -- 343
-- -- 315
-* -- 1236
-:= -- 2275
-add.period$ -- 88
-call.type$ -- 28
-change.case$ -- 187
-chr.to.int$ -- 28
-cite$ -- 58
-duplicate$ -- 717
-empty$ -- 1199
-format.name$ -- 349
-if$ -- 3324
++ -- 353
+- -- 324
+* -- 1285
+:= -- 2353
+add.period$ -- 91
+call.type$ -- 29
+change.case$ -- 193
+chr.to.int$ -- 29
+cite$ -- 60
+duplicate$ -- 738
+empty$ -- 1242
+format.name$ -- 359
+if$ -- 3432
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 26
-newline$ -- 151
-num.names$ -- 112
-pop$ -- 439
+missing$ -- 27
+newline$ -- 156
+num.names$ -- 116
+pop$ -- 449
 preamble$ -- 1
-purify$ -- 161
+purify$ -- 166
 quote$ -- 0
-skip$ -- 616
+skip$ -- 631
 stack$ -- 0
-substring$ -- 474
-swap$ -- 163
+substring$ -- 503
+swap$ -- 164
 text.length$ -- 12
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 293
+type$ -- 304
 warning$ -- 2
-while$ -- 116
+while$ -- 120
 width$ -- 0
-write$ -- 370
+write$ -- 383
 (There were 2 warnings)

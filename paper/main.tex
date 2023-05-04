@@ -9,7 +9,7 @@
 
 % to compile a preprint version, e.g., for submission to arXiv, add add the
 % [preprint] option:
-\usepackage[preprint]{nips_2018}
+\usepackage{nips2023}
 
 % to compile a camera-ready version, add the [final] option, e.g.:
      %\usepackage[final]{neurips_2018}
@@ -179,7 +179,7 @@
 
 \subsection{Reinforcement Learning}
 
-We focus on discrete-time discounted Markov Decision Processes (MDPs) expressed by the tuple $(\mathcal{S}, \mathcal{A}, P,  r,  \gamma)$, where $\mathcal{S}$ and $\mathcal{A}$ denote state space and finite action space, respectively. 
+RL problems are usually modelled by Markov Decision Processes (MDPs) expressed by the tuple $(\mathcal{S}, \mathcal{A}, P,  r,  \gamma)$, where $\mathcal{S}$ and $\mathcal{A}$ respectively denote state space and action space. 
 % $d(\cdot)$ denotes the initial state distribution.
 $P(\cdot |s,a)$ denotes transition probability over the state space given state-action pair $(s,a)$,  
 and $r(s,a)$ defines the reward associated with that transition. 
@@ -257,26 +257,30 @@ The KL-regularized optimal policy takes the form $\pi(a|s) \propto \mu(a|s)\exp\
 
 \subsection{$q$-statistics and Tsallis regularization}
 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.33\textwidth]{img/Gaussian_ks.png}
+%     \caption{xs}
+% \end{figure}
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{0.3\textwidth}
+%         \includegraphics[width=\textwidth]{img/q_stat_illus.png}
+%     \end{subfigure}
+%     \begin{subfigure}[b]{0.3\textwidth}
+%         \includegraphics[width=\textwidth]{img/tsallis_entropy.png}
+%     \end{subfigure}
+%     \begin{subfigure}[b]{0.3\textwidth}
+%         \includegraphics[width=\textwidth]{img/tsallis_kl.png}
+%     \end{subfigure}
+%     \caption{(Left) Behavior of \qlog and $q$-exponential functions.
+%     When $q=1$ they respectively recover the standard logarithm and exponential.
+%     (Mid) Tsallis entropy of the Gaussian policy $\mathcal{N}(2, 1)$. (Right) Tsallis KL divergence between two Gaussian policies $\mathcal{N}(2.75, 1)$ and $\mathcal{N}(3.25, 1)$.
+%     }
+%     \label{fig:q_stats}
+% \end{figure}
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.3\textwidth}
-        \includegraphics[width=\textwidth]{img/q_stat_illus.png}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.3\textwidth}
-        \includegraphics[width=\textwidth]{img/tsallis_entropy.png}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.3\textwidth}
-        \includegraphics[width=\textwidth]{img/tsallis_kl.png}
-    \end{subfigure}
-    \caption{(Left) Behavior of \qlog and $q$-exponential functions.
-    When $q=1$ they respectively recover the standard logarithm and exponential.
-    (Mid) Tsallis entropy of the Gaussian policy $\mathcal{N}(2, 1)$. (Right) Tsallis KL divergence between two Gaussian policies $\mathcal{N}(2.75, 1)$ and $\mathcal{N}(3.25, 1)$.
-    }
-    \label{fig:q_stats}
-\end{figure}
-
-In this paper we consider a broad class of less studied entropic regularizer known as the Tsallis entropy $S_q(\pi(\cdot|s)):= \frac{1}{q-1} \AdaBracket{\sum_a \pi^q(a|s) - 1}$, where $q \in \mathbb{R}_{+}$.
+In this paper we consider a broad class of less studied entropic regularizer known as the Tsallis entropy $S_q(\pi(\cdot|s)):= \frac{1}{q-1} \AdaBracket{1-\sum_a \pi^q(a|s)}$, where $q \in \mathbb{R}_{+}$.
 It is also called generalized entropy since it generalizes the Shannon entropy \cite{TsallisEntropy,tsallis2009introduction}.
 Tsallis entropy can also be defined by the \qlog in a similar manner to the standard logarithm defining Shannon entropy, hence eases the notation and derivation.
 \qlog and its unique inverse function $q$-exponential are defined by \cite{tsallis2009introduction}:
@@ -289,11 +293,10 @@ where $[\cdot]_{+} = \max \{\cdot, 0\}$.
 When $q\rightarrow 1$, the \qlog (resp. $q$-exponential) recovers the standard logarithm (resp. exponential) and hence Tsallis entropy degenerates to Shannon entropy.
 When $q=2$, we arrive at the Tsallis sparse entropy 
 $S_2(\pi(\cdot | s)):= \pi(a|s)\AdaBracket{1 - \pi(a|s)}$ \cite{Nachum18a-tsallis,Lee2018-TsallisRAL}. 
-The name sparse entropy comes from the fact that the regularizer leads to sparse support for the resulting policy \cite{Blondel-2020LearningFenchelYoundLoss,Martins16-sparsemax}.
+The name sparse entropy comes from the fact that the regularizer leads to sparse support for the resulting \emph{sparsemax} policy \cite{Blondel-2020LearningFenchelYoundLoss,Martins16-sparsemax}.
 When $q=\infty$, the regularizer vanishes.
-In Figure \ref{fig:q_stats} we plot the behavior of $q$-statistics under different $q$.
-
-We can write out the regularized policy for general Tsallis entropy regularization for any $q$\footnotemark\footnotetext{Different to prior works \cite{Lee2018-TsallisRAL,Nachum18a-tsallis}, our definition of $\psi$ has an additional $\frac{1}{q-1}$ term to accommodate the $q$-exponential policy, see Appendix \ref{apdx:derivation} for derivation.}:
+% In Figure \ref{fig:q_stats} we plot the behavior of $q$-statistics under different $q$.
+In this paper, we call the regularized policy sparsemax for all $q$ , and express them using the $q$-exponential\footnotemark\footnotetext{Different to prior works \cite{Lee2018-TsallisRAL,Nachum18a-tsallis}, our definition of $\psi$ has an additional $\frac{1}{q-1}$ term to accommodate the $q$-exponential policy, see Appendix \ref{apdx:derivation} for derivation.}:
 \begin{align}
     \pi(a|s) = \exp_q \AdaBracket{\frac{Q(s,a)}{\tau } - {\psi}\AdaBracket{\frac{Q(s, \cdot)}{\tau }}}, \,\,
     {\psi}\AdaBracket{\frac{Q(s,\cdot)}{\tau}} \doteq \frac{\sum_{a\in K(s)} \frac{Q(s,a)}{\tau} - 1 }{|K{(s)}|} + \frac{1}{q-1}.
@@ -302,15 +305,17 @@ We can write out the regularized policy for general Tsallis entropy regularizati
   $K(s)$ is the set of highest-value actions satisfying $1 \!+\! i\frac{Q(s,a_{(i)})}{\tau} \!>\! \sum_{j=1}^{i}\frac{Q(s,a_{(j)})}{\tau}$, with $a_{(j)}$ denotes the $j$-th largest action.
   Intuitively, the policy first sorts actions by $a_{(1)}, \dots, a_{(|\mathcal{A}|)}$ and then compute the threshold $\psi$.
   Suppose $Q(s, a_{(j+1)}) \leq \psi \leq Q(s, a_{(j)})$, then actions from $a_{(j+1)}, \dots, a_{(|\mathcal{A}|)}$ are truncated and have zero probability of being selected.
-  The truncation effect can be controlled by $\tau$.
+  The actions $a_{(1)}, \dots, a_{(j)}$ are called allowable actions and collected in the set $K(s)$.
+  The degree of truncation and the size of $K(s)$ can be controlled by $\tau$. The truncation is visualized in Figure \ref{fig:simplex_truncate}.
   
   Note that for $q\neq 1,2,\infty$ the policy does not have a closed-form solution. 
-  Nonetheless we can resort to the Taylor's expansion to obtain an approximate policy, see Appendix \ref{apdx:derivation} for details. 
+  Nonetheless we can resort to the Taylor's expansion to obtain approximate sparsemax policies, see Appendix \ref{apdx:derivation} for details. 
   For those cases \eq{\ref{eq:tsallis_policy}} still holds, but may need an additional renormalization step to guarantee a valid probability distribution. 
   Therefore, in the rest of the paper, we write $\pi(a|s) \propto \exp_q\AdaBracket{\frac{Q(s,a)}{\tau}}$.
   The effect of $q$ lies in defining the range of the acceptable actions in $K(s)$ or extent of action truncation. 
   Indeed, we can show that as $q \rightarrow \infty$, the unnormalized Taylor's expansion for the policy $\pi(a|s) \rightarrow 1, \, \forall a$, that is, after normalization it becomes a uniform distribution.
-We plot the behavior of action truncation in Figure \ref{fig:q_truncation} for two commonly used policy classes, and indeed as $q$ gets larger the truncation becomes weaker.
+  We compare argmax, softmax, sparsemax and plot the behavior of sparsemax truncation in Figure \ref{fig:simplex_truncate}.
+  We focus on Gaussian policies which are common for continuous-action algorithms.
 % \begin{figure}
 %     \centering
 %     \begin{subfigure}[b]{0.49\textwidth}
@@ -331,42 +336,56 @@ We plot the behavior of action truncation in Figure \ref{fig:q_truncation} for t
 % \end{figure}
 
 
-Very recently \citet{zhu2023generalized} proposed in RL to exploit Tsallis KL divergence which generalizes Tsallis entropy.  
+Very recently \citet{zhu2023generalized} proposed in RL to exploit Tsallis KL divergence \citep{Furuichi2004-fundamentals-qKL} which generalizes Tsallis entropy.  
 They proved that the regularized optimal policy takes a similar form to the optimal KL-regularized policy:
 % Recall that, this definition is different from the statistical physics definition \citep{Furuichi2004-fundamentals-qKL}:
 \begin{align}
     \begin{split}
-        \qKLany{\pi(\cdot|s)}{\mu(\cdot|s)} = \sum_a \pi(a|s) \ln_{q} \frac{\pi(a|s)}{\mu(a|s)}, \quad \pi(a|s) = \mu(a|s) \exp_q\AdaBracket{\frac{Q_{\pi}(s,a)}{\tau} - \psi\AdaBracket{\frac{Q_{\pi}(s,a)}{\tau}} }.
+        \qKLany{\pi(\cdot|s)}{\mu(\cdot|s)} \!=\! -\sum_a \pi(a|s) \ln_{q} \frac{\mu(a|s)}{\pi(a|s)}, \,\, \pi(a|s) = \mu(a|s) \exp_q\AdaBracket{\frac{Q_{\pi}(s,a)}{\tau} - \psi\AdaBracket{\frac{Q_{\pi}(s,a)}{\tau}} \!}.
     \end{split}
     \label{eq:tkl_policy}
 \end{align}
-We can also resort to Taylor's expansion and renormalization to obtain approximate policies, hence the policy can be written as $\pi(a|s)\propto \mu(a|s)\exp_q\AdaBracket{\frac{Q_{\pi}(s,a)}{\tau}}$.
+We also write the policy as $\pi(a|s)\propto \mu(a|s)\exp_q\AdaBracket{\frac{Q_{\pi}(s,a)}{\tau}}$.
 It is worth noting that unlike the KL divergence, the Tsallis KL divergence cannot be decomposed as $\ln_q\!\frac{\pi(a|s)}{\mu(a|s)} \neq \ln_q \pi(a|s) - \ln_q \mu(a|s)$.
 % \eq{\ref{eq:tkl_policy}} is important to our application of offline RL where we show the in-sample softmax becomes in-sample sparsemax.
 
-
-
-\begin{figure}[t]
+\begin{figure}
     \centering
-    \begin{subfigure}[b]{0.245\textwidth}
-        \includegraphics[width=\textwidth]{img/q2_Gaussian_sparsemax.png}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{img/2-simplex.png}
     \end{subfigure}
-    \begin{subfigure}[b]{0.245\textwidth}
-        \includegraphics[width=\textwidth]{img/q50_scaled_Gaussian_sparsemax.png}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.245\textwidth}
-        \includegraphics[width=\textwidth]{img/q2.0_Boltzmann_sparsemax.png}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.245\textwidth}
-        \includegraphics[width=\textwidth]{img/q50_Boltzmann_sparsemax.png}
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{img/Gaussian_ks.png}
     \end{subfigure}
     \caption{
-        The sparsemax operator acting upon Gaussian and Boltzmann policies for $q=2$ and $q=50$ by truncating actions with values lower than $\psi$. 
-    As $q\rightarrow \infty$ the policy tends toward uniform distribution.
-    We assume the The dataset is generated by Tsallis policies such that the actions absent from the offline dataset are those being truncated.
+        (Left) Comparison between argmax, softmax and sparsemax on the probability simplex. Argmax produces a deterministic policy residing on the vertices, while a softmax policy lies inside the simplex. By contrast, a sparsemax policy lives on the border.
+        (Right) Sparsemax operator acting on a Gaussian policy by truncating actions with value below the threshold $\psi$.
+        Actions with value larger than $\psi$ are collected in the set $K(s)$.
     }
-    \label{fig:q_truncation}
+    \label{fig:simplex_truncate}
 \end{figure}
+
+% \begin{figure}[t]
+%     \centering
+%     \begin{subfigure}[b]{0.245\textwidth}
+%         \includegraphics[width=\textwidth]{img/q2_Gaussian_sparsemax.png}
+%     \end{subfigure}
+%     \begin{subfigure}[b]{0.245\textwidth}
+%         \includegraphics[width=\textwidth]{img/q50_scaled_Gaussian_sparsemax.png}
+%     \end{subfigure}
+%     \begin{subfigure}[b]{0.245\textwidth}
+%         \includegraphics[width=\textwidth]{img/q2.0_Boltzmann_sparsemax.png}
+%     \end{subfigure}
+%     \begin{subfigure}[b]{0.245\textwidth}
+%         \includegraphics[width=\textwidth]{img/q50_Boltzmann_sparsemax.png}
+%     \end{subfigure}
+%     \caption{
+%         The sparsemax operator acting upon Gaussian and Boltzmann policies for $q=2$ and $q=50$ by truncating actions with values lower than $\psi$. 
+%     As $q\rightarrow \infty$ the policy tends toward uniform distribution.
+%     We assume the The dataset is generated by Tsallis policies such that the actions absent from the offline dataset are those being truncated.
+%     }
+%     \label{fig:q_truncation}
+% \end{figure}
 
 
 
@@ -493,7 +512,7 @@ The set satisfies the condition $K_{t, q} \preceq K_\mathcal{D}$:
     \end{split}
     \label{eq:tsallis_backward_q2}
  \end{align}
- The second equation is because $\max_{\pi}\sum_{a\in\pi(\cdot|s)}\pi(a|s)Q(s,a) - \tau S_2(\pi(\cdot|s))$ attains its maximum at $\tau \sum_{a \in K(s)}\AdaBracket{ \frac{Q(s,a)}{\tau} }^2 - \psi\AdaBracket{\frac{Q(s, \cdot)}{\tau}}^2 + \tau$ \cite{Lee2018-TsallisRAL,Martins16-sparsemax}, and the last equation is due to $K_{t, q} \preceq K_\mathcal{D}$.
+ The second equation is because $\max_{\pi}\sum_{a\in\pi(\cdot|s)}\pi(a|s)Q(s,a) + \tau S_2(\pi(\cdot|s))$ attains its maximum at $\tau \sum_{a \in K(s)}\AdaBracket{ \frac{Q(s,a)}{\tau} }^2 - \psi\AdaBracket{\frac{Q(s, \cdot)}{\tau}}^2 + \tau$ \cite{Lee2018-TsallisRAL,Martins16-sparsemax}, and the last equation is due to $K_{t, q} \preceq K_\mathcal{D}$.
  \eq{\ref{eq:tsallis_backward_q2}} states that, one needs not to explicitly enforce the support constraint since it is automatically fulfilled by learning a new subset of allowable actions.
 % That is, the backward Bellman optimality equation becomes:
 % \begin{align}
