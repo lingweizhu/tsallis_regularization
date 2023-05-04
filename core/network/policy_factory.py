@@ -61,32 +61,8 @@ class MLPCont(nn.Module):
         std = torch.exp(log_std)
         pi_distribution = Normal(mu, std)
         logp_pi = pi_distribution.log_prob(actions).sum(axis=-1)
-        logp_pi -= (2*(np.log(2) - actions - F.softplus(-2*actions))).sum(axis=1)
+
         return logp_pi
-    
-    def get_logq_prob(self, obs, actions, q=2.0):
-        if not isinstance(obs, torch.Tensor): obs = torch_utils.tensor(obs, self.device)
-        if not isinstance(actions, torch.Tensor): actions = torch_utils.tensor(actions, self.device)
-        net_out = self.body(obs)
-        mu = self.mu_layer(net_out)
-        mu = torch.tanh(mu) * self.action_range
-        log_std = torch.sigmoid(self.log_std_logits)
-        # log_std = self.log_std_layer(net_out)
-        log_std = self.min_log_std + log_std * (
-            self.max_log_std - self.min_log_std)
-        std = torch.exp(log_std)
-        pi_distribution = Normal(mu, std)
-        logp_pi = pi_distribution.log_prob(actions).sum(axis=-1)
-        logp_pi -= (2*(np.log(2) - actions - F.softplus(-2*actions))).sum(axis=1)
-        # compute the q-logarithm of policy
-        logq_pi = self.logq_x(torch.clip(torch.exp(logp_pi), min=1e-8), q)
-        return logq_pi
-    
-    def logq_x(self, x, q=2.0):
-        return (x**(q-1) - 1) / (q-1)
-    
-    def expq_x(self, x, q=2.0):
-        return torch.pow(torch.clip(1 + (q-1)*x, min=0.0), 1/(q-1))
 
 
 class MLPDiscrete(nn.Module):
