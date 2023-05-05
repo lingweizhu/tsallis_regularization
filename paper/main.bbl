@@ -1,4 +1,4 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{29}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -58,6 +58,13 @@ S.~Fujimoto, D.~Meger, and D.~Precup.
 \newblock Off-policy deep reinforcement learning without exploration.
 \newblock In \emph{Proceedings of the 36th International Conference on Machine
   Learning}, pages 2052--2062, 2019.
+
+\bibitem[Furuichi et~al.(2004)Furuichi, Yanagi, and
+  Kuriyama]{Furuichi2004-fundamentals-qKL}
+S.~Furuichi, K.~Yanagi, and K.~Kuriyama.
+\newblock Fundamental properties of tsallis relative entropy.
+\newblock \emph{Journal of Mathematical Physics}, 45\penalty0 (12):\penalty0
+  4868--4877, 2004.
 
 \bibitem[Ghasemipour et~al.(2021)Ghasemipour, Schuurmans, and
   Gu]{Ghasemipour2021-EMaQ}
