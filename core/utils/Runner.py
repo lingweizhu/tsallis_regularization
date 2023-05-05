@@ -1,62 +1,4 @@
 
-
-# def run_steps(agent, max_steps, log_interval, eval_pth):
-#     t0 = time.time()
-#     evaluations = []
-#     agent.populate_returns(initialize=True)
-#     while True:
-#         if log_interval and not agent.total_steps % log_interval:
-#             mean, median, min_, max_ = agent.log_file(
-#                 elapsed_time=log_interval / (time.time() - t0), test=True)
-#             evaluations.append(mean)
-#             t0 = time.time()
-#         if max_steps and agent.total_steps >= max_steps:
-#             break
-#         agent.step()
-#     agent.save()
-#     np.save(Path(eval_pth, "evaluations.npy"), np.array(evaluations))
-
-# def run_experiment(config_file, job_id, base_save_dir, num_threads):
-#     # Parse Config
-#     cfg = config.Config(config_file, job_id)
-
-#     # Setup
-#     torch.use_deterministic_algorithms(True)
-#     torch_utils.set_thread_count(num_threads)
-
-#     # set seed
-#     random.seed(cfg["run"])
-#     seed = random.randint(1, 1000000000)
-#     cfg.set_seed(seed)
-#     torch_utils.random_seed(cfg["seed"])
-
-#     # Save Path
-#     exp_path = cfg.get_save_dir_and_save_config(
-#         parsed.base_save_dir,
-#         preformat_args=["env_name", "dataset"],
-#         postformat_args=["run"],
-#         arg_hash=True,
-#         extra_hash_ignore=["seed", "run"])
-#     torch_utils.ensure_dir(exp_path)
-
-#     # DataSet and Environment loading
-#     env_fn = environment.EnvFactory.create_env_fn(cfg)
-#     offline_data = run_funcs.load_testset(
-#         cfg["env_name"], cfg["dataset"], cfg["seed"])
-
-#     # Setting up the logger
-#     lggr = logger.Logger(cfg, exp_path)
-#     cfg.log(lggr)
-
-#     # Initializing the agent and running the experiment
-#     agent_obj = construct_agent(
-#         config=cfg,
-#         exp_path=exp_path,
-#         env_fn=env_fn,
-#         offline_data=offline_data,
-#         logger=lggr)
-
-
 import os
 import time
 import random
@@ -113,6 +55,7 @@ class Runner(object):
         self._initialized_from_checkpoint = False
         # misc setup
         self.evaluations = []
+        self.kldiv_eval = []
 
         # Save Path
 
@@ -120,7 +63,7 @@ class Runner(object):
 
         # DataSet and Environment loading
         env_fn = environment.EnvFactory.create_env_fn(self.cfg)
-        offline_data = load_testset(
+        self.offline_data = load_testset(
             self.cfg["env_name"], self.cfg["dataset"], self.cfg["seed"])
 
         # Setting up the logger
@@ -132,7 +75,7 @@ class Runner(object):
             config=self.cfg,
             exp_path=self.save_path,
             env_fn=env_fn,
-            offline_data=offline_data,
+            offline_data=self.offline_data,
             logger=self.lggr)
 
     def _initialize_comp_env(self, num_threads):
@@ -177,6 +120,7 @@ class Runner(object):
         cp_dict["rngs"]["python"] = random.getstate()
         cp_dict["rngs"]["numpy"] = np.random.get_state()
         cp_dict["evaluations"] = self.evaluations
+        cp_dict["kldiv_eval"] = self.kldiv_eval
         cp_dict["agent"] = self.agent  # This is the majority of work.
 
         torch_utils.ensure_dir(self._chkpt_dir())
@@ -202,8 +146,11 @@ class Runner(object):
         random.setstate(cp_dict["rngs"]["python"])
         np.random.set_state(cp_dict["rngs"]["numpy"])
 
+        self.offline_data = load_testset(
+            self.cfg["env_name"], self.cfg["dataset"], self.cfg["seed"])
         # initialize other
         self.evaluations = cp_dict["evaluations"]
+        self.kldiv_eval = cp_dict["kldiv_eval"]
         self.agent = cp_dict["agent"]
         env_fn = environment.EnvFactory.create_env_fn(self.cfg)
         self.agent.env = env_fn()
@@ -229,6 +176,10 @@ class Runner(object):
         mean, median, min_, max_ = self.agent.log_file(
             elapsed_time=self.cfg.log_interval / (time.time() - t0),
             test=True)
+
+        in_ = torch_utils.tensor(self.agent.state_normalizer(self.offline_data["env"]["states"]),
+                                 self.agent.device)
+        self.kldiv_eval.append(self.agent.get_kl_div({"obs": in_, "act": self.offline_data["env"]["actions"]}))
         self.evaluations.append(mean)
 
     def _run(self):
@@ -260,6 +211,8 @@ class Runner(object):
             self.agent.save()
             np.save(Path(self.save_path, "evaluations.npy"),
                     np.array(self.evaluations))  # Final save.
+            np.save(Path(self.save_path, "kldiv_eval.npy"),
+                    np.array(self.kldiv_eval))  # Final save.
             self.cleanup_all_checkpoints()
         except ValueError as e:
             with open(Path(self.save_path, "except.out"), 'w') as f:
@@ -268,6 +221,9 @@ class Runner(object):
             # if there is a value error, then we have nans somewhere.
             # save an evaluations that has nan.
             self.evaluations.append(float("nan"))
+            self.kldiv_eval.append(float("nan"))
             np.save(Path(self.save_path, "evaluations.npy"),
                     np.array(self.evaluations))  # Final save.
+            np.save(Path(self.save_path, "kldiv_eval.npy"),
+                    np.array(self.kldiv_eval))  # Final save.
             self.cleanup_all_checkpoints()

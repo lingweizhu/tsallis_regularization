@@ -319,6 +319,11 @@ class Agent:
                 pass
         return mean, median, min_, max_
 
+    def get_kl_div(self, data):
+        states, actions = data['obs'], data['act']
+        return (self.ac.pi.get_logprob(states, actions) -
+                self.beh_pi.get_logprob(states, actions)).mean()
+
     def policy(self, o, eval=False):
         o = torch_utils.tensor(self.state_normalizer(o), self.device)
         with torch.no_grad():

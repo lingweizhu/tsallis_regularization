@@ -5,6 +5,7 @@ import toml
 import os
 import pathlib
 import pandas as pd
+from analysis.log2data import extract_from_single_run
 
 def get_configs_and_data(dir_name):
     param_fldrs = os.listdir(dir_name)
@@ -33,10 +34,11 @@ def compress_configs_and_data(config_and_data):
     diff_ks = set()
     for idx, k1 in enumerate(ks):
         for k2 in ks[(idx+1):]:
-            d = dict(set(config_and_data[k1]["params"].items()) ^ set(config_and_data[k2]["params"].items()))
+            d = dict(set(config_and_data[k1]["params"].items()) ^
+                     set(config_and_data[k2]["params"].items()))
             for k in d.keys():
                 diff_ks.add(k)
-    diff_dict = {k:set() for k in diff_ks}
+    diff_dict = {k: set() for k in diff_ks}
     for k, v in config_and_data.items():
         for p in diff_ks:
             diff_dict[p].add(v["params"][p])
@@ -71,6 +73,7 @@ def analyze_data(dir_name):
 
         if any(d is not None for d in data):
             _data = [d for d in data if d is not None]
+            row["arr"] = _data
             row["mean_arr"] = np.mean(_data, axis=0)
             row["var_arr"] = np.var(_data, axis=0)
             row["stderr_arr"] = np.sqrt(row["var_arr"]/len(_data))
@@ -87,3 +90,25 @@ def analyze_data(dir_name):
             
         p_a_ds.append(row)
     return pd.DataFrame(p_a_ds)
+
+def transform_best_over(df, sort_perf_by, group_by):
+    sdf = df.sort_values([sort_perf_by]).groupby(group_by).tail(1).sort_values(group_by)
+    return sdf
+
+def transform_to_json(dir_name, csv_save_name, sort_perf_by, group_by):
+    # Honestly it would be really nice to grab data and compress it.
+    # param_fldrs = os.listdir(dir_name)
+    df = analyze_data(dir_name)
+    sdf = df.sort_values([sort_perf_by]).groupby(group_by).tail(1).sort_values(group_by)
+    sdf.to_json(csv_save_name)
+
+def transform_to_csv(dir_name, csv_save_name, sort_perf_by, group_by):
+    # Honestly it would be really nice to grab data and compress it.
+    # param_fldrs = os.listdir(dir_name)
+    df = analyze_data(dir_name)
+    sdf = df.sort_values([sort_perf_by]).groupby(group_by).tail(1).sort_values(group_by)
+    sdf.to_csv(csv_save_name, index=False)
+
+
+
+
