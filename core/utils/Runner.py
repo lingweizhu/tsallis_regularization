@@ -179,7 +179,7 @@ class Runner(object):
 
         in_ = torch_utils.tensor(self.agent.state_normalizer(self.offline_data["env"]["states"]),
                                  self.agent.device)
-        self.kldiv_eval.append(self.agent.get_kl_div({"obs": in_, "act": self.offline_data["env"]["actions"]}))
+        self.kldiv_eval.append(self.agent.get_kl_div({"obs": in_, "act": self.offline_data["env"]["actions"]}).detach())
         self.evaluations.append(mean)
 
     def _run(self):

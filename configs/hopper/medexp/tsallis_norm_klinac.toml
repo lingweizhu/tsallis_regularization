@@ -3,7 +3,7 @@
 config_version = 1
 device="cpu"
 
-agent_name="TsallisKLInAC"
+agent_name="TsallisNormKLInAC"
 env_name="Hopper"
 dataset="medexp"
 evaluation_criteria="return"

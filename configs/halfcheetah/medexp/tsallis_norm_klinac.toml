@@ -3,14 +3,14 @@
 config_version = 1
 device="cpu"
 
-agent_name="TsallisKLInAC"
-env_name="Hopper"
+agent_name="TsallisNormKLInAC"
+env_name="HalfCheetah"
 dataset="medexp"
 evaluation_criteria="return"
 
 discrete_control=false
-state_dim=11
-action_dim=3
+state_dim=17
+action_dim=6
 
 max_steps=1_000_000
 log_interval=10_000
