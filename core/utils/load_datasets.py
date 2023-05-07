@@ -1,6 +1,7 @@
 import pickle
 import os
 import gym
+import d4rl # This registers all the envs to gym
 
 os.environ['D4RL_SUPPRESS_IMPORT_ERROR'] = '1'
 EARLYCUTOFF = "EarlyCutOff"

@@ -63,8 +63,10 @@ class Runner(object):
 
         # DataSet and Environment loading
         env_fn = environment.EnvFactory.create_env_fn(self.cfg)
-        self.offline_data = load_testset(
+        offline_data = load_testset(
             self.cfg["env_name"], self.cfg["dataset"], self.cfg["seed"])
+        self.kldiv_data = {"states": offline_data["env"]["states"],
+                           "actions": offline_data["env"]["actions"]}
 
         # Setting up the logger
         self.lggr = logger.Logger(self.cfg, self.save_path)
@@ -75,7 +77,7 @@ class Runner(object):
             config=self.cfg,
             exp_path=self.save_path,
             env_fn=env_fn,
-            offline_data=self.offline_data,
+            offline_data=offline_data,
             logger=self.lggr)
 
     def _initialize_comp_env(self, num_threads):
@@ -137,7 +139,7 @@ class Runner(object):
         self.cleanup_checkpoints()
 
     def _initialize_from_checkpoint(self,
-                                   chkpt_file):
+                                    chkpt_file):
         with open(chkpt_file, 'rb') as f:
             cp_dict = pickle.load(f)
 
@@ -146,8 +148,10 @@ class Runner(object):
         random.setstate(cp_dict["rngs"]["python"])
         np.random.set_state(cp_dict["rngs"]["numpy"])
 
-        self.offline_data = load_testset(
+        offline_data = load_testset(
             self.cfg["env_name"], self.cfg["dataset"], self.cfg["seed"])
+        self.kldiv_data = {"states": offline_data["env"]["states"],
+                           "actions": offline_data["env"]["actions"]}
         # initialize other
         self.evaluations = cp_dict["evaluations"]
         self.kldiv_eval = cp_dict["kldiv_eval"]
@@ -177,9 +181,15 @@ class Runner(object):
             elapsed_time=self.cfg.log_interval / (time.time() - t0),
             test=True)
 
-        in_ = torch_utils.tensor(self.agent.state_normalizer(self.offline_data["env"]["states"]),
-                                 self.agent.device)
-        self.kldiv_eval.append(self.agent.get_kl_div({"obs": in_, "act": self.offline_data["env"]["actions"]}).detach())
+        sze = self.kldiv_data["states"].shape[0]
+        r_idx = np.random.randint(0, sze, size=1000)
+        in_ = torch_utils.tensor(
+            self.agent.state_normalizer(self.kldiv_data["states"][r_idx, :]),
+            self.agent.device)
+        kldiv_calc = self.agent.get_kl_div(
+            {"obs": in_,
+             "act": self.kldiv_data["actions"][r_idx, :]}).detach()
+        self.kldiv_eval.append(kldiv_calc)
         self.evaluations.append(mean)
 
     def _run(self):
@@ -190,6 +200,7 @@ class Runner(object):
         max_steps = self.cfg.max_steps
         if not self._initialized_from_checkpoint:
             agent.populate_returns(initialize=True)
+        print(agent.total_steps)
 
         while True:
             if log_interval and not agent.total_steps % log_interval:
@@ -203,6 +214,8 @@ class Runner(object):
             # if end
             agent.step()
         # while end
+
+        print(agent.total_steps)
 
     def run_experiment(self):
         try:
