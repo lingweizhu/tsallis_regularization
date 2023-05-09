@@ -106,7 +106,15 @@ class TsallisInAC(base.Agent):
         self.offline_param_init(offline_data)
 
         return
-
+    
+    
+    def logq_x(self, x):
+        return (x**(self.q-1) - 1) / (self.q-1)
+    
+    def expq_x(self, x):
+        return torch.pow(torch.clip(1 + (self.q-1)*x, min=0), 1/(self.q-1))
+    
+    
     def compute_loss_beh_pi(self, data):
         """L_{\omega}, learn behavior policy"""
         states, actions = data['obs'], data['act']
@@ -119,8 +127,8 @@ class TsallisInAC(base.Agent):
         states = data['obs']
         v_phi = self.value_net(states).squeeze(-1)
         with torch.no_grad():
-            actions, _ = self.ac.pi(states)
-            logq_probs = self.ac.pi.get_logq_prob(states, actions, self.q)
+            actions, log_probs = self.ac.pi(states)
+            logq_probs = self.logq_x(torch.exp(log_probs))
             min_Q, _, _ = self.get_q_value_target(states, actions)
         target = min_Q - self.tau * logq_probs
         value_loss = (0.5 * (v_phi - target) ** 2).mean()
@@ -134,8 +142,8 @@ class TsallisInAC(base.Agent):
     def compute_loss_q(self, data):
         states, actions, rewards, next_states, dones = data['obs'], data['act'], data['reward'], data['obs2'], data['done']
         with torch.no_grad():
-            next_actions, _ = self.ac.pi(next_states)
-            logq_probs = self.ac.pi.get_logq_prob(next_states, next_actions, self.q)
+            next_actions, log_probs = self.ac.pi(next_states)
+            logq_probs = self.logq_x(torch.exp(log_probs))
         next_q_values, _, _ = self.get_q_value_target(next_states, next_actions)
         q_target = rewards + self.gamma * (1 - dones) * (next_q_values - self.tau * logq_probs)
     
@@ -163,7 +171,7 @@ class TsallisInAC(base.Agent):
         '''
         with torch.no_grad():
             beh_prob = torch.clip(torch.exp(self.beh_pi.get_logprob(states, actions)), min=self.eps)
-            
+            value = self.get_state_value(states)
         '''why we do not normalize
         we are assuming that actions not in the dataset are truncated 
         by Tsallis behavior policies. So when presented with these actions in the dataset,
@@ -176,12 +184,10 @@ class TsallisInAC(base.Agent):
         x = Q, y = ln_q pi_D^-1
         '''                
 
-        x = min_Q / self.tau
+        x = (min_Q - value) / self.tau
+        y = self.logq_x(beh_prob**(-1))
 
-        y = self.ac.pi.logq_x(beh_prob**(-1), self.q)
-
-
-        tsallis_policy= torch.pow(self.ac.pi.expq_x(x + y, self.q)**(self.q-1) + (self.q - 1)**2 * x * y, 1/(self.q-1))
+        tsallis_policy= (self.expq_x(x + y)**(self.q-1) + (self.q - 1)**2 * x * y) ** 1/(self.q-1)
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
         pi_loss = -(clipped * log_probs).mean()
         return pi_loss, ""
