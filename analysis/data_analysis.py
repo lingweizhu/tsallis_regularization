@@ -62,6 +62,7 @@ def analyze_data(dir_name):
         for r in runs:
             pth = pathlib.Path(dir_name, fldr, r)
             pth_eval = pathlib.Path(pth, "evaluations.npy")
+            pth_kldiv = pathlib.Path(pth, "kldiv.npy")
             pth_toml = pathlib.Path(dir_name, fldr, r + ".toml")
             prm = toml.load(pth_toml)
             row["runs"].append(prm["run"])

@@ -106,15 +106,13 @@ class TsallisInAC(base.Agent):
         self.offline_param_init(offline_data)
 
         return
-    
-    
+
     def logq_x(self, x):
         return (x**(self.q-1) - 1) / (self.q-1)
     
     def expq_x(self, x):
         return torch.pow(torch.clip(1 + (self.q-1)*x, min=0), 1/(self.q-1))
-    
-    
+
     def compute_loss_beh_pi(self, data):
         """L_{\omega}, learn behavior policy"""
         states, actions = data['obs'], data['act']
@@ -228,7 +226,6 @@ class TsallisInAC(base.Agent):
                 "v_info": v_info.mean(),
                 "logp_info": logp_info.mean(),
                 }
-
 
     def get_q_value_discrete(self, o, a, with_grad=False):
         if with_grad:
