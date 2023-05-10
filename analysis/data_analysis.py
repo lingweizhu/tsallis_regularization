@@ -78,22 +78,25 @@ def analyze_data(dir_name):
             row["mean_arr"] = np.mean(_data, axis=0)
             row["var_arr"] = np.var(_data, axis=0)
             row["stderr_arr"] = np.sqrt(row["var_arr"]/len(_data))
-            row["end_max"] = np.max([np.mean(d[-10:]) for d in _data])
-            row["end_min"] = np.min([np.mean(d[-10:]) for d in _data])
-            row["end_mean"] = np.mean(row["mean_arr"][-10:])
-            row["end_var"] = np.var([np.mean(d[-10:]) for d in _data])
+            row["end_max"] = np.max([np.mean(d[51:]) for d in _data])
+            row["end_min"] = np.min([np.mean(d[51:]) for d in _data])
+            row["end_mean"] = np.mean(row["mean_arr"][51:])
+            row["end_var"] = np.var([np.mean(d[51:]) for d in _data])
             row["end_stderr"] = np.sqrt(row["end_var"]/len(_data))
             row["all_max"] = np.max([np.mean(d) for d in _data])
             row["all_min"] = np.min([np.mean(d) for d in _data])
             row["all_mean"] = np.mean([np.mean(d) for d in _data])
             row["all_var"] = np.var([np.mean(d) for d in _data])
             row["all_stderr"] = np.sqrt(row["all_var"]/len(_data))
-            
+
         p_a_ds.append(row)
     return pd.DataFrame(p_a_ds)
 
-def transform_best_over(df, sort_perf_by, group_by):
-    sdf = df.sort_values([sort_perf_by]).groupby(group_by).tail(1).sort_values(group_by)
+def transform_best_over(df, sort_perf_by, group_by=None):
+    if group_by is None:
+        sdf = df.sort_values([sort_perf_by]).tail(1)
+    else:
+        sdf = df.sort_values([sort_perf_by]).groupby(group_by).tail(1).sort_values(group_by)
     return sdf
 
 def transform_to_json(dir_name, csv_save_name, sort_perf_by, group_by):
