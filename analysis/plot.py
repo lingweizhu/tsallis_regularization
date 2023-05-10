@@ -29,6 +29,22 @@ def plot_data(hans_dir, hans_param_setting, my_data, show=False, save=None, titl
     if show:
         plt.show()
 
+def plot_kldiv(my_data, show=False, save=None, title=""):
+    colorset = tc.colorsets["bright"]
+    y, error = prep_my_data(my_data)
+    x = range(len(y))
+    plt.plot(x, y, color=colorset[1], label="Tsallis")
+    plt.fill_between(x, y-error, y+error, color=colorset[1], alpha=0.4)
+
+    plt.legend()
+    plt.title(title)
+    if save is not None:
+        plt.savefig(save)
+        plt.clf()
+    if show:
+        plt.show()
+    
+
 
 def prep_hans_data(dir_name, param_setting):
     hans_hc = [extract_from_single_run(
@@ -59,10 +75,28 @@ def plot_eval_env(base_tkl_dir, base_hans_dir, hans_param_setting, envname, data
     hans_dir = base_hans_dir.format(envname, dataset)
     plot_data(hans_dir, hans_param_setting, plt_data[0][0:5], save=save, title=envname + " " + dataset)
 
-def plot_everything(save_dir):
+def plot_eval_everything(save_dir):
     dataset_name = "medexp"
-    for (envname, hps) in [("Hopper", 4), ("HalfCheetah", 2), ("Walker2d", 2)]:
+    for (envname, hps) in [("Hopper", 4), ("HalfCheetah", 2), ("Walker2d", 2), ("Ant", 4)]:
         plot_eval_env("data/tsallis_klinac/",
                       "data/hans_data/after_fix/{}/in_sample_ac/data_{}/sweep/",
                       hps, envname, dataset_name,
                       save=os.path.join(save_dir, envname + "_" + dataset_name + ".pdf"))
+
+    dataset_name = "medrep"
+    for (envname, hps) in [("Hopper", 1), ("HalfCheetah", 1), ("Walker2d", 1), ("Ant", 1)]:
+        plot_eval_env("data/tsallis_klinac/",
+                      "data/hans_data/after_fix/{}/in_sample_ac/data_{}/sweep/",
+                      hps, envname, dataset_name,
+                      save=os.path.join(save_dir, envname + "_" + dataset_name + ".pdf"))
+
+
+def plot_kldiv_env(base_tkl_dir, envname, dataset, tau=0.1, save=None):
+    tkl_dirname = os.path.join(
+        base_tkl_dir, "env_name-{}".format(envname), "dataset-{}".format(dataset))
+    df_tkl = da.analyze_data(tkl_dirname)
+    sdf_tkl = da.transform_best_over(df_tkl, "end_mean")
+    print(sdf_tkl["tau"])
+
+    plt_data = sdf_tkl[["kldiv"]].iloc[0]
+    plot_kldiv(plt_data[0][0:5], save=save, title=envname + " " + dataset)

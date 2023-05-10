@@ -59,22 +59,25 @@ def analyze_data(dir_name):
         row["seeds"] = []
         # row["data"] = []
         data = []
+        kldiv_data = []
         for r in runs:
             pth = pathlib.Path(dir_name, fldr, r)
             pth_eval = pathlib.Path(pth, "evaluations.npy")
-            pth_kldiv = pathlib.Path(pth, "kldiv.npy")
+            pth_kldiv = pathlib.Path(pth, "kldiv_eval.npy")
             pth_toml = pathlib.Path(dir_name, fldr, r + ".toml")
             prm = toml.load(pth_toml)
             row["runs"].append(prm["run"])
             row["seeds"].append(prm["seed"])
-            try:
-                data.append(np.load(pth_eval))
-            except FileNotFoundError:
-                data.append(None)
+            # try:
+            data.append(np.load(pth_eval))
+            kldiv_data.append(np.load(pth_kldiv))
+            # except FileNotFoundError:
+            #     data.append(None)
 
         if any(d is not None for d in data):
             _data = [d for d in data if d is not None]
             row["arr"] = _data
+            row["kldiv"] = kldiv_data
             row["mean_arr"] = np.mean(_data, axis=0)
             row["var_arr"] = np.var(_data, axis=0)
             row["stderr_arr"] = np.sqrt(row["var_arr"]/len(_data))
