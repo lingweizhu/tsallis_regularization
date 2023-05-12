@@ -77,12 +77,11 @@ def prep_hans_data(dir_name, param_setting):
     return y, error
 
 
-def plot_mydata_line(dirname, color, label):
+def plot_mydata_line(dirname, color, label, arr_name="arr"):
     df_tkl = da.analyze_data(dirname)
     sdf_tkl = da.transform_best_over(df_tkl, "end_mean")
-    y, error = prep_my_data(sdf_tkl[["arr"]].iloc[0][0][0:5])
+    y, error = prep_my_data(sdf_tkl[[arr_name]].iloc[0][0][0:5])
     plot_line(y, error, color, label=label)
-
 
 def prep_my_data(my_data):
     smoothed_y = [np.mean(np.lib.stride_tricks.sliding_window_view(d, 10), axis=1) for d in my_data]
@@ -126,6 +125,23 @@ def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_settin
         plot_mydata_line(
             get_dirname(base_tkl_dir, envname, dataset),
             color=colorset[i], label=name
+        )
+        i += 1
+
+    plt.legend()
+    plt.title(envname + " " + dataset)
+
+    plt.show()
+
+
+def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_setting, envname, dataset, save=None, arr_name="arr"):
+
+    colorset = tc.colorsets["bright"]
+    i = 0
+    for (base_tkl_dir, name) in base_tkl_dirs_names:
+        plot_mydata_line(
+            get_dirname(base_tkl_dir, envname, dataset),
+            color=colorset[i], label=name, arr_name=arr_name
         )
         i += 1
 
