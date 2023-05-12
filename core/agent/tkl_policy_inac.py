@@ -128,11 +128,10 @@ class TKLPolicyInAC(base.Agent):
         v_phi = self.value_net(states).squeeze(-1)
         with torch.no_grad():
             actions, log_probs = self.ac.pi(states)
-            logq_probs = self.logq_x(torch.exp(log_probs))
             min_Q, _, _ = self.get_q_value_target(states, actions)
         target = min_Q 
         value_loss = (0.5 * (v_phi - target) ** 2).mean()
-        return value_loss, v_phi.detach().numpy(), logq_probs.detach().numpy()
+        return value_loss, v_phi.detach().numpy(), log_probs.detach().numpy()
     
     def get_state_value(self, state):
         with torch.no_grad():
