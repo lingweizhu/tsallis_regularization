@@ -43,7 +43,25 @@ def plot_kldiv(my_data, show=False, save=None, title=""):
         plt.clf()
     if show:
         plt.show()
-    
+
+
+def get_dirname(base_dir, envname, dataset):
+    return os.path.join(
+        base_dir,
+        "env_name-{}".format(envname),
+        "dataset-{}".format(dataset))
+
+
+def plot_line(y, error, color, label=""):
+    x = range(len(y))
+    plt.plot(x, y, color=color, label=label)
+    plt.fill_between(x, y-error, y+error, color=color, alpha=0.4)
+
+
+def plot_hans_line(dir_name, param_setting, color, label="InAC"):
+    y, error = prep_hans_data(dir_name, param_setting)
+    x = range(len(y))
+    plot_line(y, error, color=color, label=label)
 
 
 def prep_hans_data(dir_name, param_setting):
@@ -58,10 +76,19 @@ def prep_hans_data(dir_name, param_setting):
     error = 1.97*(np.sqrt(np.var(hans_smoothed_hc_y, axis=0))/4)
     return y, error
 
+
+def plot_mydata_line(dirname, color, label):
+    df_tkl = da.analyze_data(dirname)
+    sdf_tkl = da.transform_best_over(df_tkl, "end_mean")
+    y, error = prep_my_data(sdf_tkl[["arr"]].iloc[0][0][0:5])
+    plot_line(y, error, color, label=label)
+
+
 def prep_my_data(my_data):
     smoothed_y = [np.mean(np.lib.stride_tricks.sliding_window_view(d, 10), axis=1) for d in my_data]
     y, error = np.mean(smoothed_y, axis=0), 1.97*(np.sqrt(np.var(smoothed_y, axis=0))/4)
     return y, error
+
 
 def plot_eval_env(base_tkl_dir, base_hans_dir, hans_param_setting, envname, dataset, tau=0.1, save=None):
     tkl_dirname = os.path.join(
@@ -89,6 +116,23 @@ def plot_eval_everything(save_dir):
                       "data/hans_data/after_fix/{}/in_sample_ac/data_{}/sweep/",
                       hps, envname, dataset_name,
                       save=os.path.join(save_dir, envname + "_" + dataset_name + ".pdf"))
+
+
+def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_setting, envname, dataset, save=None):
+
+    colorset = tc.colorsets["bright"]
+    i = 0
+    for (base_tkl_dir, name) in base_tkl_dirs_names:
+        plot_mydata_line(
+            get_dirname(base_tkl_dir, envname, dataset),
+            color=colorset[i], label=name
+        )
+        i += 1
+
+    plt.legend()
+    plt.title(envname + " " + dataset)
+
+    plt.show()
 
 
 def plot_kldiv_env(base_tkl_dir, envname, dataset, tau=0.1, save=None):

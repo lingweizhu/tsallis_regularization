@@ -106,7 +106,7 @@ def construct_TsallisKLInAC(config, exp_path, env_fn, offline_data, logger):
 
 
 def construct_TsallisNormKLInAC(config, exp_path, env_fn, offline_data, logger):
-    return TsallisKLInAC(
+    return TsallisNormKLInAC(
         device=config["device"],
         discrete_control=config["discrete_control"],
         exp_path=exp_path,  # config["exp_path"],
