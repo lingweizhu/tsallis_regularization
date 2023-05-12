@@ -160,10 +160,9 @@ class TKLPolicyInAC(base.Agent):
 
         with torch.no_grad():
             value = self.get_state_value(states)
-
-        x = (min_Q - value) / self.tau
+            psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - self.tau)/self.tau, min=0))
+        x = min_Q / self.tau - psi
         tsallis_policy = self.expq_x(x)
-        # print(tsallis_policy)
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
         pi_loss = -(clipped * log_probs).mean()
         return pi_loss, ""
