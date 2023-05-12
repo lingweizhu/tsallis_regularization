@@ -109,10 +109,10 @@ class TKLPolicyInAC(base.Agent):
         return
     
     def logq_x(self, x):
-        return (x**(1-self.q) - 1) / (1-self.q)
+        return (x**(self.q-1) - 1) / (self.q-1)
     
     def expq_x(self, x):
-        return torch.pow(torch.clip(1 + (1-self.q)*x, min=0), 1/(1-self.q))
+        return torch.pow(torch.clip(1 + (self.q-1)*x, min=0), 1/(self.q-1))
         
 
     def compute_loss_beh_pi(self, data):
@@ -163,7 +163,7 @@ class TKLPolicyInAC(base.Agent):
 
         x = (min_Q - value) / self.tau
         tsallis_policy = self.expq_x(x)
-
+        # print(tsallis_policy)
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
         pi_loss = -(clipped * log_probs).mean()
         return pi_loss, ""
