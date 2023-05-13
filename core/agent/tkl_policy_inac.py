@@ -32,6 +32,7 @@ class TKLPolicyInAC(base.Agent):
                  evaluation_criteria,
                  logger,
                  q,
+                 normalize,
                  ):
         super(TKLPolicyInAC, self).__init__(
             exp_path=exp_path,
@@ -98,11 +99,12 @@ class TKLPolicyInAC(base.Agent):
             self.get_q_value = self.get_q_value_cont
             self.get_q_value_target = self.get_q_value_target_cont
 
-        self.tau = tau * 0.5
+        self.tau = tau 
         self.polyak = polyak
 
         self.q = q
-
+        self.normalize = normalize
+        
         self.fill_offline_data_to_buffer(offline_data)
         self.offline_param_init(offline_data)
 
@@ -162,10 +164,11 @@ class TKLPolicyInAC(base.Agent):
             value = self.get_state_value(states)
             psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - self.tau)/self.tau, min=0))
         """
-        no solution for psi when q > 2.0
-        use value as normalization as heuristic        
+        normalize: use psi when True, observed quick learning at the beginning but no significant improve
+        use value:  slow at the beginning but significantly improved later
+        need to test it with more seeds to confirm
         """
-        if self.q == 2.0:
+        if self.normalize:
             x = min_Q / self.tau - psi
         else:
             x = (min_Q - value) / self.tau
