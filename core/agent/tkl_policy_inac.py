@@ -98,7 +98,7 @@ class TKLPolicyInAC(base.Agent):
             self.get_q_value = self.get_q_value_cont
             self.get_q_value_target = self.get_q_value_target_cont
 
-        self.tau = tau
+        self.tau = tau * 0.5
         self.polyak = polyak
 
         self.q = q
@@ -161,7 +161,15 @@ class TKLPolicyInAC(base.Agent):
         with torch.no_grad():
             value = self.get_state_value(states)
             psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - self.tau)/self.tau, min=0))
-        x = min_Q / self.tau - psi
+        """
+        no solution for psi when q > 2.0
+        use value as normalization as heuristic        
+        """
+        if self.q == 2.0:
+            x = min_Q / self.tau - psi
+        else:
+            x = (min_Q - value) / self.tau
+                  
         tsallis_policy = self.expq_x(x)
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
         pi_loss = -(clipped * log_probs).mean()
