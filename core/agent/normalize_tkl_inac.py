@@ -186,7 +186,7 @@ class TsallisKLInAC(base.Agent):
         x -= x.max(dim=-1)[0].expand_as(x)
     
         tsallis_policy = self.expq_x(x)
-        print(x, tsallis_policy)
+        # print(x, tsallis_policy)
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
         pi_loss = -(clipped * log_probs).mean()
         return pi_loss, ""
