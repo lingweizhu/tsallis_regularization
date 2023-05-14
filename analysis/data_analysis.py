@@ -45,7 +45,7 @@ def compress_configs_and_data(config_and_data):
     return diff_dict
 
 
-def analyze_data(dir_name):
+def analyze_data(dir_name, subset_func=None):
     param_fldrs = os.listdir(dir_name)
     p_a_ds = []
     for fldr in param_fldrs:
@@ -93,7 +93,10 @@ def analyze_data(dir_name):
             row["all_stderr"] = np.sqrt(row["all_var"]/len(_data))
 
         p_a_ds.append(row)
-    return pd.DataFrame(p_a_ds)
+    df = pd.DataFrame(p_a_ds)
+    if subset_func is not None:
+        df = subset_func(df)
+    return df
 
 def transform_best_over(df, sort_perf_by, group_by=None):
     if group_by is None:

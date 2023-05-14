@@ -77,8 +77,8 @@ def prep_hans_data(dir_name, param_setting):
     return y, error
 
 
-def plot_mydata_line(dirname, color, label, arr_name="arr"):
-    df_tkl = da.analyze_data(dirname)
+def plot_mydata_line(dirname, color, label, subset_func=None, arr_name="arr"):
+    df_tkl = da.analyze_data(dirname, subset_func)
     sdf_tkl = da.transform_best_over(df_tkl, "end_mean")
     y, error = prep_my_data(sdf_tkl[[arr_name]].iloc[0][0][0:5])
     plot_line(y, error, color, label=label)
@@ -117,31 +117,33 @@ def plot_eval_everything(save_dir):
                       save=os.path.join(save_dir, envname + "_" + dataset_name + ".pdf"))
 
 
-def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_setting, envname, dataset, save=None):
+# def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_setting, envname, dataset, save=None):
 
-    colorset = tc.colorsets["bright"]
-    i = 0
-    for (base_tkl_dir, name) in base_tkl_dirs_names:
-        plot_mydata_line(
-            get_dirname(base_tkl_dir, envname, dataset),
-            color=colorset[i], label=name
-        )
-        i += 1
+#     colorset = tc.colorsets["bright"]
+#     i = 0
+#     for (base_tkl_dir, name, subset_func) in base_tkl_dirs_names:
+#         plot_mydata_line(
+#             get_dirname(base_tkl_dir, envname, dataset),
+#             color=colorset[i], label=name,
+#             subset_func=subset_func
+#         )
+#         i += 1
 
-    plt.legend()
-    plt.title(envname + " " + dataset)
+#     plt.legend()
+#     plt.title(envname + " " + dataset)
 
-    plt.show()
+#     plt.show()
 
 
 def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_setting, envname, dataset, save=None, arr_name="arr"):
 
     colorset = tc.colorsets["bright"]
     i = 0
-    for (base_tkl_dir, name) in base_tkl_dirs_names:
+    for (base_tkl_dir, name, subset_func) in base_tkl_dirs_names:
         plot_mydata_line(
             get_dirname(base_tkl_dir, envname, dataset),
-            color=colorset[i], label=name, arr_name=arr_name
+            color=colorset[i], label=name, arr_name=arr_name,
+            subset_func=subset_func
         )
         i += 1
 
