@@ -182,10 +182,10 @@ class TsallisInAC(base.Agent):
         x = Q, y = ln_q pi_D^-1
         '''                
 
-        x = (min_Q - value) / self.tau
+        x = min_Q / self.tau
         y = self.logq_x(beh_prob**(-1))
 
-        tsallis_policy= (self.expq_x(x + y)**(self.q-1) + (self.q - 1)**2 * x * y) ** 1/(self.q-1)
+        tsallis_policy= torch.pow(self.expq_x(x + y)**(self.q-1) + (self.q - 1)**2 * x * y, 1/(self.q-1))
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
         pi_loss = -(clipped * log_probs).mean()
         return pi_loss, ""
