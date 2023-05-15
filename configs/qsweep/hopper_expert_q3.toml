@@ -1,7 +1,7 @@
 config_version = 1
 device="cpu"
 
-agent_name="InSampleAC"
+agent_name="TKLPolicyInAC"
 env_name="Hopper"
 dataset="expert"
 evaluation_criteria="return"
@@ -20,13 +20,14 @@ batch_size=256
 polyak=0.995
 
 gamma=0.99
+q=3
 
 use_target_network=1
 target_network_update_freq=1
-
-learning_rate=1e-3
-tau=0.01
+normalize=false
 
 #new protocol
 [sweep]
+learning_rate=[3e-5, 1e-4, 3e-4, 1e-3]
+tau=[1.0, 0.5, 0.33, 0.1, 0.01]
 run=[0, 1, 2, 3, 4]

@@ -102,40 +102,48 @@ def plot_eval_env(base_tkl_dir, base_hans_dir, hans_param_setting, envname, data
     plot_data(hans_dir, hans_param_setting, plt_data[0][0:5], save=save, title=envname + " " + dataset)
 
 def plot_eval_everything(save_dir):
+
+    dataset_name = "expert"
+    for (envname, hps) in [("Hopper", 9), ("HalfCheetah", 4), ("Walker2d", 7)]: #, ("Ant", 4)]:
+        plt.clf()
+        plot_eval_env_multiple([("data/fixed_tsallis_inac/", "tsallis", None),
+                                ("data/tkl_policy/", "tkl-policy", None)],
+                               "data/lr1e-3/{}/in_sample_ac/data_{}/sweep/".format(envname, dataset_name),
+                               hps, envname, dataset_name, arr_name="arr",
+                               save=os.path.join(save_dir, envname + "_" + dataset_name + ".pdf"))
+
     dataset_name = "medexp"
-    for (envname, hps) in [("Hopper", 4), ("HalfCheetah", 2), ("Walker2d", 2), ("Ant", 4)]:
-        plot_eval_env("data/tsallis_klinac/",
-                      "data/hans_data/after_fix/{}/in_sample_ac/data_{}/sweep/",
-                      hps, envname, dataset_name,
-                      save=os.path.join(save_dir, envname + "_" + dataset_name + ".pdf"))
-
-    dataset_name = "medrep"
-    for (envname, hps) in [("Hopper", 1), ("HalfCheetah", 1), ("Walker2d", 1), ("Ant", 1)]:
-        plot_eval_env("data/tsallis_klinac/",
-                      "data/hans_data/after_fix/{}/in_sample_ac/data_{}/sweep/",
-                      hps, envname, dataset_name,
-                      save=os.path.join(save_dir, envname + "_" + dataset_name + ".pdf"))
+    for (envname, hps) in [("Hopper", 9), ("HalfCheetah", 9), ("Walker2d", 2), ("Ant", 4)]:
+        plt.clf()
+        plot_eval_env_multiple([("data/fixed_tsallis_inac/", "tsallis", None),
+                                ("data/tkl_policy/", "tkl-policy", None)],
+                               "data/lr1e-3/{}/in_sample_ac/data_{}/sweep/".format(envname, dataset_name),
+                               hps, envname, dataset_name, arr_name="arr",
+                               save=os.path.join(save_dir, envname + "_" + dataset_name + ".pdf"))
 
 
-# def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_setting, envname, dataset, save=None):
+def plot_kldiv_everything(save_dir):
 
-#     colorset = tc.colorsets["bright"]
-#     i = 0
-#     for (base_tkl_dir, name, subset_func) in base_tkl_dirs_names:
-#         plot_mydata_line(
-#             get_dirname(base_tkl_dir, envname, dataset),
-#             color=colorset[i], label=name,
-#             subset_func=subset_func
-#         )
-#         i += 1
+    dataset_name = "expert"
+    for (envname, hps) in [("Hopper", 9), ("HalfCheetah", 4), ("Walker2d", 7)]: #, ("Ant", 4)]:
+        plt.clf()
+        plot_eval_env_multiple([("data/fixed_tsallis_inac/", "tsallis", None),
+                                ("data/tkl_policy/", "tkl-policy", None)],
+                               "data/lr1e-3/{}/in_sample_ac/data_{}/sweep/".format(envname, dataset_name),
+                               hps, envname, dataset_name, arr_name="kldiv",
+                               save=os.path.join(save_dir, envname + "_" + dataset_name + "_kldiv.pdf"))
 
-#     plt.legend()
-#     plt.title(envname + " " + dataset)
+    dataset_name = "medexp"
+    for (envname, hps) in [("Hopper", 9), ("HalfCheetah", 9), ("Walker2d", 2), ("Ant", 4)]:
+        plt.clf()
+        plot_eval_env_multiple([("data/fixed_tsallis_inac/", "tsallis", None),
+                                ("data/tkl_policy/", "tkl-policy", None)],
+                               "data/lr1e-3/{}/in_sample_ac/data_{}/sweep/".format(envname, dataset_name),
+                               hps, envname, dataset_name, arr_name="kldiv",
+                               save=os.path.join(save_dir, envname + "_" + dataset_name + "_kldiv.pdf"))        
 
-#     plt.show()
 
-
-def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_setting, envname, dataset, save=None, arr_name="arr"):
+def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_setting, envname, dataset, show=False, save=None, arr_name="arr"):
 
     colorset = tc.colorsets["bright"]
     i = 0
@@ -147,10 +155,20 @@ def plot_eval_env_multiple(base_tkl_dirs_names, base_hans_dir, hans_param_settin
         )
         i += 1
 
+    if arr_name == "arr":
+        plot_hans_line(base_hans_dir,
+                       hans_param_setting,
+                       colorset[i],
+                       label="InAC")
+
     plt.legend()
     plt.title(envname + " " + dataset)
 
-    plt.show()
+    if show:
+        plt.show()
+
+    if save is not None:
+        plt.savefig(save)
 
 
 def plot_kldiv_env(base_tkl_dir, envname, dataset, tau=0.1, save=None):
