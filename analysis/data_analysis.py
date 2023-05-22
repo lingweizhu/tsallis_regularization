@@ -5,7 +5,64 @@ import toml
 import os
 import pathlib
 import pandas as pd
+import analysis.plot_paths_v9_batch256 as baseline_info
 from analysis.log2data import extract_from_single_run
+
+def get_lbl_name(baseline_name, datasetname):
+    bn = ""
+    if baseline_name == "td3_bc":
+        bn = "TD3BC"
+    elif baseline_name == "cqlsac_offline":
+        bn = "CQL"
+    elif baseline_name == "awac_offline":
+        bn = "AWAC"
+    elif baseline_name == "iql_offline":
+        bn = "IQL"
+
+    if datasetname == "expert" or datasetname == "medium":
+        return bn + "_" + datasetname
+
+    if datasetname == "medexp":
+        return bn + "_" + "medium_expert"
+    
+    if datasetname == "medrep":
+        return bn + "_" + "medium_replay"
+
+    raise "datasetname not found"
+
+def get_baseline_param(baseline_name, envname, datasetname):
+    bn_lbl = get_lbl_name(baseline_name, datasetname)
+    info = None
+    print(bn_lbl)
+    if envname == "Ant":
+        info = next(v for v in baseline_info.at if v["label"] == bn_lbl)
+    elif envname == "HalfCheetah":
+        info = next(v for v in baseline_info.hc if v["label"] == bn_lbl)
+    elif envname == "Hopper":
+        info = next(v for v in baseline_info.hp if v["label"] == bn_lbl)
+    elif envname == "Walker2d":
+        info = next(v for v in baseline_info.wk2d if v["label"] == bn_lbl)
+    else:
+        raise "Env name not found"
+
+    return info["control"][1][0]
+
+def get_baseline_data(baseline_name, envname, datasetname):
+    dir_name = "data/baselines/{}/{}/data_{}/sweep".format(envname.lower(),
+                                                           baseline_name,
+                                                           datasetname)
+
+    param_setting = get_baseline_param(
+        baseline_name, envname, datasetname)
+
+    return extract_baseline_data(dir_name, param_setting)
+
+def extract_baseline_data(dir_name, param_setting):
+    data = [extract_from_single_run(
+        dir_name + "/" + "{}_run/{}_param_setting/log".format(
+            r, param_setting),
+        "normalized_return") for r in range(5)]
+    return data
 
 def get_configs_and_data(dir_name):
     param_fldrs = os.listdir(dir_name)
@@ -91,12 +148,28 @@ def analyze_data(dir_name, subset_func=None):
             row["all_mean"] = np.mean([np.mean(d) for d in _data])
             row["all_var"] = np.var([np.mean(d) for d in _data])
             row["all_stderr"] = np.sqrt(row["all_var"]/len(_data))
-
+            row["beg_mean"] = np.mean([np.mean(d[0:10]) for d in _data])
+            row["beg_var"] = np.var([np.mean(d[0:10]) for d in _data])
+            row["beg_stderr"] = np.sqrt(row["beg_var"]/len(_data))
+            row["beg_50_mean"] = np.mean([np.mean(d[0:50]) for d in _data])
+            row["beg_50_var"] = np.var([np.mean(d[0:50]) for d in _data])
+            row["beg_50_stderr"] = np.sqrt(row["beg_50_var"]/len(_data))
         p_a_ds.append(row)
+
     df = pd.DataFrame(p_a_ds)
     if subset_func is not None:
         df = subset_func(df)
     return df
+
+def sensitivity_curve(dir_name,
+                      sort_perf_by,
+                      group_by,  # this is the sensitivity parameters
+                      ):
+
+    df = analyze_data(dir_name)
+    sdf = transform_best_over(df, sort_perf_by, group_by)
+    return sdf
+
 
 def transform_best_over(df, sort_perf_by, group_by=None):
     if group_by is None:
