@@ -1,7 +1,0 @@
-d4rl
-gym
-pandas
-pygame
-scikit-learn
-seaborn
-torch
