@@ -10,7 +10,7 @@ from core.network.network_architectures import DoubleCriticNetwork, DoubleCritic
 AC = namedtuple('AC', ['q1q2', 'pi'])
 ACTarg = namedtuple('ACTarg', ['q1q2', 'pi'])
 
-class TsallisKLInAC(base.Agent):
+class TKLPolicyInAC(base.Agent):
     def __init__(self,
                  device,
                  discrete_control,
@@ -32,9 +32,9 @@ class TsallisKLInAC(base.Agent):
                  evaluation_criteria,
                  logger,
                  q,
-                 alpha,
+                 normalize,
                  ):
-        super(TsallisKLInAC, self).__init__(
+        super(TKLPolicyInAC, self).__init__(
             exp_path=exp_path,
             seed=seed,
             env_fn=env_fn,
@@ -99,24 +99,23 @@ class TsallisKLInAC(base.Agent):
             self.get_q_value = self.get_q_value_cont
             self.get_q_value_target = self.get_q_value_target_cont
 
-        self.tau = tau
+        self.tau = tau 
         self.polyak = polyak
 
         self.q = q
-        self.alpha = alpha
+        self.normalize = normalize
+        
         self.fill_offline_data_to_buffer(offline_data)
         self.offline_param_init(offline_data)
 
         return
     
     def logq_x(self, x):
-        return (x**(1-self.q) - 1) / (1-self.q)
+        return (x**(self.q-1) - 1) / (self.q-1)
     
     def expq_x(self, x):
-        return torch.pow(torch.clip(1 + (1-self.q)*x, min=0), 1/(1-self.q))
+        return torch.pow(torch.clip(1 + (self.q-1)*x, min=0), 1/(self.q-1))
         
-    def normalize(self, x):
-        return (x - x.mean(dim=-1)) / x.std(dim=-1)
 
     def compute_loss_beh_pi(self, data):
         """L_{\omega}, learn behavior policy"""
@@ -131,19 +130,10 @@ class TsallisKLInAC(base.Agent):
         v_phi = self.value_net(states).squeeze(-1)
         with torch.no_grad():
             actions, log_probs = self.ac.pi(states)
-            log_probs = self.normalize(log_probs)
-            logq_probs = self.logq_x(torch.exp(log_probs))
-
             min_Q, _, _ = self.get_q_value_target(states, actions)
-            
-            log_beh_probs = self.beh_pi.get_logprob(states, actions)
-            log_beh_probs = self.normalize(log_beh_probs)
-            logq_beh_probs = self.logq_x(torch.exp(log_beh_probs))
-
-        # target = min_Q - self.tau * logq_probs
-        target = min_Q - self.tau * logq_probs - self.alpha * self.tau * logq_beh_probs
+        target = min_Q 
         value_loss = (0.5 * (v_phi - target) ** 2).mean()
-        return value_loss, v_phi.detach().numpy(), logq_probs.detach().numpy()
+        return value_loss, v_phi.detach().numpy(), log_probs.detach().numpy()
     
     def get_state_value(self, state):
         with torch.no_grad():
@@ -153,18 +143,9 @@ class TsallisKLInAC(base.Agent):
     def compute_loss_q(self, data):
         states, actions, rewards, next_states, dones = data['obs'], data['act'], data['reward'], data['obs2'], data['done']
         with torch.no_grad():
-            next_actions, log_probs = self.ac.pi(next_states)
-            log_probs = self.normalize(log_probs)
-            logq_probs = self.logq_x(torch.exp(log_probs))
-            log_beh_probs = self.beh_pi.get_logprob(states, actions)
-            log_beh_probs = self.normalize(log_beh_probs)
-            
-        munchausen = self.logq_x(torch.exp(log_beh_probs))
-        # print(f"logq_probs {logq_probs}, log_beh_probs {munchausen}")
-
-        munchausen_rewards = rewards + self.alpha * self.tau * munchausen
+            next_actions, _ = self.ac.pi(next_states)
         next_q_values, _, _ = self.get_q_value_target(next_states, next_actions)
-        q_target = munchausen_rewards + self.gamma * (1 - dones) * (next_q_values - self.tau * logq_probs)
+        q_target = rewards + self.gamma * (1 - dones) * next_q_values
         
         minq, q1, q2 = self.get_q_value(states, actions, with_grad=True)    
         critic1_loss = (0.5 * (q_target - q1) ** 2).mean()
@@ -181,12 +162,18 @@ class TsallisKLInAC(base.Agent):
 
         with torch.no_grad():
             value = self.get_state_value(states)
-            
-        x = (min_Q - value) / self.tau
-        x -= x.max(dim=-1)[0].expand_as(x)
-    
+            psi = torch.sqrt(torch.clip((min_Q/self.tau)**2 - (value - self.tau)/self.tau, min=0))
+        """
+        normalize: use psi when True, observed quick learning at the beginning but no significant improve
+        use value:  slow at the beginning but significantly improved later
+        need to test it with more seeds to confirm
+        """
+        if self.normalize:
+            x = min_Q / self.tau - psi
+        else:
+            x = (min_Q - value) / self.tau
+                  
         tsallis_policy = self.expq_x(x)
-        # print(x, tsallis_policy)
         clipped = torch.clip(tsallis_policy, self.eps, self.exp_threshold)
         pi_loss = -(clipped * log_probs).mean()
         return pi_loss, ""
@@ -285,6 +272,5 @@ class TsallisKLInAC(base.Agent):
 
         path = os.path.join(parameters_dir, "vs_net")
         torch.save(self.value_net.state_dict(), path)
-
 
 
