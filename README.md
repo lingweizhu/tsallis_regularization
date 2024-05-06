@@ -1,10 +1,9 @@
 
 # Offline Reinforcement Learning via Tsallis Regularization
 
-**paper**: https://openreview.net/forum?id=HNqEKZDDRc&referrer=%5BAuthor%20Console%5D(%2Fgroup%3Fid%3DTMLR%2FAuthors%23your-submissions)
+This is the code for the paper: Offline RL Via Tsallis Regularization accepted by Transaction on Machine Learning Research https://openreview.net/forum?id=HNqEKZDDRc.\
 **authors**: Lingwei Zhu, Matthew Kyle Schlegel, Han Wang, Martha White
 
-The Tsallis InAC code is modified based on the code provided by 'The In-Sample Softmax for Offline Reinforcement Learning' (https://openreview.net/pdf?id=u-RuvyDYqCM).
 
 
 ## Setup
