@@ -1,7 +1,8 @@
 
 # Offline Reinforcement Learning via Tsallis Regularization
 
-This is the code for the paper: Offline RL Via Tsallis Regularization accepted by Transaction on Machine Learning Research https://openreview.net/forum?id=HNqEKZDDRc.\
+This is the code for the paper: Offline RL Via Tsallis Regularization accepted by Transaction on Machine Learning Research https://openreview.net/forum?id=HNqEKZDDRc.
+
 **authors**: Lingwei Zhu, Matthew Kyle Schlegel, Han Wang, Martha White
 
 
